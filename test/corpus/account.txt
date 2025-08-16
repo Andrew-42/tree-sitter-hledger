@@ -1,0 +1,42 @@
+======================
+Account directive test
+======================
+
+account assets
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (account_directive
+        (account)))))
+
+==============================
+Account directive comment test
+==============================
+
+account assets      ; test comment
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (account_directive
+        (account)
+        (comment)))))
+
+=======================
+Account multi word name 
+=======================
+
+account assets:Whole Foods
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (account_directive
+        (account)))))

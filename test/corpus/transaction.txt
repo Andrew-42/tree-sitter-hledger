@@ -1,0 +1,76 @@
+=======================
+Simple transaction test
+=======================
+
+2024-01-02 shopping
+    expenses: clothing        1 G
+    pouch
+
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (date)
+            (transaction_heading
+            (note))
+            (posting
+                (account)
+                (amount
+                    (quantity)
+                    (commodity)))
+            (posting
+                (account)))))
+
+================
+Transaction test
+================
+
+2024-01-02 shopping
+    ; dnd transaction
+    expenses: clothing        1 gold
+    pouch
+
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (date)
+            (transaction_heading
+            (note))
+            (comment)
+            (posting
+                (account)
+                (amount
+                    (quantity)
+                    (commodity)))
+            (posting
+                (account)))))
+
+==================================
+Transaction test - posting comment
+==================================
+
+2024-01-02 shopping
+    ; dnd transaction
+    expenses: clothing        1 gold  ; plate armor
+    pouch
+
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (date)
+            (transaction_heading
+            (note))
+            (comment)
+            (posting
+                (account)
+                (amount
+                    (quantity)
+                    (commodity))
+                (comment))
+            (posting
+                (account)))))

@@ -1,0 +1,29 @@
+======================
+Tag directive test
+======================
+
+tag trip
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (tag_directive
+        (tag)))))
+
+======================
+Invalid tag definition
+======================
+
+tag trip space
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (tag_directive
+        (tag))))
+  (ERROR
+    (UNEXPECTED 'p')))

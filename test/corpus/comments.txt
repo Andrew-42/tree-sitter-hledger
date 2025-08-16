@@ -1,0 +1,38 @@
+========================
+Top level # comment test
+========================
+
+# comment
+
+---
+
+(source_file
+  (journal_item
+    (top_comment)))
+
+===================
+Top level ; comment
+===================
+
+; comment
+
+---
+
+(source_file
+  (journal_item
+    (top_comment)))
+
+=============
+Block comment
+=============
+
+comment
+content of the comment
+
+end comment
+
+---
+
+(source_file
+  (journal_item
+    (block_comment)))

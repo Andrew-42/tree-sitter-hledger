@@ -1,0 +1,28 @@
+=================
+Include directive
+=================
+
+include ./hledger.journal
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (include_directive
+        (file_path)))))
+
+==============================
+Include directive with comment
+==============================
+
+include ./hledger.journal  ; include file
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (include_directive
+        (file_path)
+        (comment)))))
