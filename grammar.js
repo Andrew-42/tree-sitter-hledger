@@ -11,7 +11,7 @@ module.exports = grammar({
   name: 'hledger',
 
   conflicts: $ => [
-    [$.period], [$._cost_amount], [$.transaction_heading], [$.note, $.payee]
+    [$._cost_amount], [$.transaction_heading], [$.note, $.payee]
   ],
 
   extras: _ => [],
@@ -41,8 +41,7 @@ module.exports = grammar({
 
     tilde: _ => '~',
 
-    period: $ => seq(repeat1($._alphanum), repeat(seq($._whitechar, repeat1($._alphanum)))),
-
+    period: _ => /[a-zA-Z0-9-]+(?: [a-zA-Z0-9-]+)*/,
 
     transaction: $ => prec.left(seq(
       $.transaction_heading,

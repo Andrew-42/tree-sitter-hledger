@@ -113,35 +113,8 @@
       "value": "~"
     },
     "period": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_alphanum"
-          }
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "_whitechar"
-              },
-              {
-                "type": "REPEAT1",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_alphanum"
-                }
-              }
-            ]
-          }
-        }
-      ]
+      "type": "PATTERN",
+      "value": "[a-zA-Z0-9-]+(?: [a-zA-Z0-9-]+)*"
     },
     "transaction": {
       "type": "PREC_LEFT",
@@ -1484,9 +1457,6 @@
   },
   "extras": [],
   "conflicts": [
-    [
-      "period"
-    ],
     [
       "_cost_amount"
     ],

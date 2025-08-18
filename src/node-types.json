@@ -287,11 +287,6 @@
     }
   },
   {
-    "type": "period",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "periodic_transaction",
     "named": true,
     "fields": {},
@@ -575,11 +570,11 @@
   },
   {
     "type": "account",
-    "named": false
+    "named": true
   },
   {
     "type": "account",
-    "named": true
+    "named": false
   },
   {
     "type": "alias",
@@ -632,6 +627,10 @@
   {
     "type": "payee",
     "named": false
+  },
+  {
+    "type": "period",
+    "named": true
   },
   {
     "type": "quantity",
