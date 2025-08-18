@@ -9,8 +9,8 @@ Incomplete transaction
 (source_file
     (journal_item
         (transaction
-            (date)
             (transaction_heading
+                (date)
                 (note))
             (comment))))
 
@@ -27,8 +27,8 @@ Simple transaction test
 (source_file
     (journal_item
         (transaction
-            (date)
             (transaction_heading
+                (date)
                 (note))
             (posting
                 (account)
@@ -52,8 +52,8 @@ Transaction test
 (source_file
     (journal_item
         (transaction
-            (date)
             (transaction_heading
+                (date)
                 (note))
             (comment)
             (posting
@@ -80,9 +80,9 @@ Transaction test - posting comment
 (source_file
     (journal_item
         (transaction
-            (date)
             (transaction_heading
-            (note))
+                (date)
+                (note))
             (posting
                 (comment))
             (posting
@@ -108,8 +108,8 @@ Transaction test - more postings
 (source_file
     (journal_item
         (transaction
-            (date)
             (transaction_heading
+                (date)
                 (note))
             (posting
                 (account)
@@ -127,6 +127,50 @@ Transaction test - more postings
                     (neg_quantity)
                     (commodity))))))
 
+==========================
+Transaction test - heading
+==========================
+
+2024-01-03 ! (12345) pay rent
+    ; Additional transaction comment lines, indented.
+    ; There can be a ! or * after the date meaning "pending" or "cleared".
+    ; There can be a parenthesised (code) after the date/status.
+                                    ; Amounts' sign shows direction of flow.
+    assets:checking          $-500  ; Minus means removed from this account (credit).
+    expenses:rent             $500  ; Plus means added to this account (debit).
+
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (transaction_heading
+                (date)
+                (status)
+                (code)
+                (note))
+            (posting
+                (comment))
+            (posting
+                (comment))
+            (posting
+                (comment))
+            (posting
+                (comment))
+            (posting
+                (account)
+                (amount
+                    (commodity)
+                    (neg_quantity))
+                    (comment))
+            (posting
+                (account)
+                (amount
+                    (commodity)
+                    (quantity))
+                    (comment)))))
+
+
 =======================
 Transaction test - cost
 =======================
@@ -142,8 +186,8 @@ Transaction test - cost
 (source_file
     (journal_item
         (transaction
-            (date)
             (transaction_heading
+                (date)
                 (note))
             (comment)
             (posting
@@ -186,8 +230,8 @@ Transaction test - assert
 (source_file
     (journal_item
         (transaction
-            (date)
             (transaction_heading
+                (date)
                 (note))
             (posting
                 (account)
@@ -220,16 +264,93 @@ Transaction test - assert
 
 (source_file
     (journal_item
-        (transaction
+    (transaction
+        (transaction_heading
             (date)
-            (transaction_heading
-                (note))
-            (posting
-                (account)
-                (amount
-                    (commodity)
-                    (quantity))
-                (assert)
-                (amount
-                    (commodity)
-                    (quantity))))))
+            (note))
+        (posting
+            (comment))
+        (posting
+            (comment))
+        (posting
+            (comment))
+        (posting
+            (account)
+        (amount
+            (commodity)
+            (quantity))
+        (assert)
+        (amount
+            (commodity)
+            (quantity)))
+        (posting
+        (account)
+        (amount
+            (commodity)
+            (quantity))
+        (assert)
+        (amount
+            (commodity)
+            (quantity)))
+        (posting
+        (account)
+        (amount
+            (quantity)
+            (commodity))
+        (assert)
+        (amount
+            (neg_quantity)
+            (commodity)))
+        (posting
+        (account)
+        (amount
+            (quantity)
+            (commodity))
+        (assert)
+        (amount
+            (quantity)
+            (commodity)))
+        (posting
+        (account)
+        (amount
+            (quantity)
+            (commodity))
+        (assert)
+        (amount
+            (quantity)
+            (commodity)))
+        (posting
+        (account)
+        (amount
+            (quantity)
+            (commodity))
+        (assert)
+        (amount
+            (quantity)
+            (commodity))
+        (cost)
+        (amount
+            (commodity)
+            (quantity)))
+        (posting
+        (account)
+        (amount
+            (quantity)
+            (commodity))
+        (assert)
+        (amount
+            (quantity)
+            (commodity))
+        (cost)
+        (amount
+            (commodity)
+            (quantity)))
+        (posting
+        (account)
+        (amount
+            (commodity)
+            (quantity))
+        (assert)
+        (amount
+            (commodity)
+            (neg_quantity))))))

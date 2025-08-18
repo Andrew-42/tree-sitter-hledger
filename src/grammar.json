@@ -151,10 +151,6 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "date"
-          },
-          {
-            "type": "SYMBOL",
             "name": "transaction_heading"
           },
           {
@@ -186,6 +182,10 @@
     "transaction_heading": {
       "type": "SEQ",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "date"
+        },
         {
           "type": "CHOICE",
           "members": [
@@ -258,15 +258,23 @@
           ]
         },
         {
-          "type": "SEQ",
+          "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "_whitespace"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_whitespace"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "note"
+                }
+              ]
             },
             {
-              "type": "SYMBOL",
-              "name": "note"
+              "type": "BLANK"
             }
           ]
         }
@@ -276,7 +284,7 @@
       "type": "TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "\\S+(?: \\S+)*"
+        "value": "[^*!()|\\s]+(?: [^*!()|\\s]+)*"
       }
     },
     "status": {
@@ -611,7 +619,7 @@
     },
     "tag": {
       "type": "PATTERN",
-      "value": "[^\\s; ]+"
+      "value": "[^\\s;]+"
     },
     "commodity_directive": {
       "type": "PREC",
@@ -730,8 +738,11 @@
       ]
     },
     "payee": {
-      "type": "PATTERN",
-      "value": "[^\\r\\n\\s]+( [^\\r\\n\\s]+)*"
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "[^*!()|\\s]+(?: [^*!()|\\s]+)*"
+      }
     },
     "account_directive": {
       "type": "PREC_LEFT",
@@ -1478,6 +1489,13 @@
     ],
     [
       "_cost_amount"
+    ],
+    [
+      "transaction_heading"
+    ],
+    [
+      "note",
+      "payee"
     ]
   ],
   "precedences": [],

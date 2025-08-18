@@ -11,7 +11,7 @@ module.exports = grammar({
   name: 'hledger',
 
   conflicts: $ => [
-    [$.period], [$._cost_amount]
+    [$.period], [$._cost_amount], [$.transaction_heading], [$.note, $.payee]
   ],
 
   extras: _ => [],
@@ -26,6 +26,8 @@ module.exports = grammar({
       $.block_comment,
       $.top_comment,
     ),
+
+    // TODO: add autoposting
 
     periodic_transaction: $ => prec.left(seq(
       $.tilde,
@@ -43,7 +45,6 @@ module.exports = grammar({
 
 
     transaction: $ => prec.left(seq(
-      $.date,
       $.transaction_heading,
       optional($._sep_comment),
       $._newline,
@@ -51,13 +52,14 @@ module.exports = grammar({
     )),
 
     transaction_heading: $ => seq(
+      $.date,
       optional(seq($._whitespace, $.status)),
       optional(seq($._whitespace, $.code)),
       optional(seq($._whitespace, $.payee, $._whitespace, '|')),
-      seq($._whitespace, $.note),
+      optional(seq($._whitespace, $.note)),
     ),
 
-    note: _ => token(/\S+(?: \S+)*/),
+    note: _ => token(/[^*!()|\s]+(?: [^*!()|\s]+)*/),
 
     status: _ => choice('*', '!'),
 
@@ -127,7 +129,7 @@ module.exports = grammar({
       optional($._sep_comment),
     ),
 
-    tag: _ => /[^\s; ]+/,
+    tag: _ => /[^\s;]+/,
 
     commodity_directive: $ => prec(1, seq(
       'commodity',
@@ -157,7 +159,7 @@ module.exports = grammar({
       optional($._sep_comment),
     ),
 
-    payee: _ => /[^\r\n\s]+( [^\r\n\s]+)*/,
+    payee: _ => token(/[^*!()|\s]+(?: [^*!()|\s]+)*/),
 
     account_directive: $ => prec.left(seq(
       'account',

@@ -253,7 +253,17 @@
     }
   },
   {
+    "type": "note",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "note_subdirective",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "payee",
     "named": true,
     "fields": {}
   },
@@ -392,6 +402,11 @@
     "fields": {}
   },
   {
+    "type": "tag",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "tag_directive",
     "named": true,
     "fields": {},
@@ -428,10 +443,6 @@
           "named": true
         },
         {
-          "type": "date",
-          "named": true
-        },
-        {
           "type": "posting",
           "named": true
         },
@@ -452,6 +463,10 @@
       "types": [
         {
           "type": "code",
+          "named": true
+        },
+        {
+          "type": "date",
           "named": true
         },
         {
@@ -615,16 +630,8 @@
     "named": false
   },
   {
-    "type": "note",
-    "named": true
-  },
-  {
     "type": "payee",
     "named": false
-  },
-  {
-    "type": "payee",
-    "named": true
   },
   {
     "type": "quantity",
@@ -633,10 +640,6 @@
   {
     "type": "tag",
     "named": false
-  },
-  {
-    "type": "tag",
-    "named": true
   },
   {
     "type": "tilde",
