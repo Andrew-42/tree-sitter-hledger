@@ -449,23 +449,7 @@
     "named": false
   },
   {
-    "type": "\t\t",
-    "named": false
-  },
-  {
-    "type": "\t ",
-    "named": false
-  },
-  {
     "type": " ",
-    "named": false
-  },
-  {
-    "type": " \t",
-    "named": false
-  },
-  {
-    "type": "  ",
     "named": false
   },
   {
@@ -550,11 +534,11 @@
   },
   {
     "type": "account",
-    "named": false
+    "named": true
   },
   {
     "type": "account",
-    "named": true
+    "named": false
   },
   {
     "type": "alias",
@@ -614,11 +598,11 @@
   },
   {
     "type": "tag",
-    "named": false
+    "named": true
   },
   {
     "type": "tag",
-    "named": true
+    "named": false
   },
   {
     "type": "type",

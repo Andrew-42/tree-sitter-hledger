@@ -1,1 +1,4 @@
-account assets      ; test text
+2024-01-02 shopping
+    ; dnd transaction
+    expenses: clothing        1 gold  ; plate armor
+    pouch

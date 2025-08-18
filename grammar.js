@@ -37,7 +37,7 @@ module.exports = grammar({
       seq($._whitespace, $.note),
     ),
 
-    note: _ => /\S+(?: \S+)*/,
+    note: _ => token(/\S+(?: \S+)*/),
 
     status: _ => choice('*', '!'),
 
@@ -52,12 +52,8 @@ module.exports = grammar({
           optional(
             seq(
               $._spacer,
-              optional($._whitespace),
-              choice(
-                $._assert_amount,
-                $._cost_amount,
-                $.amount,
-              )
+              $._cost_amount,
+              optional($._assert_amount)
             )
           ),
           optional($._sep_comment),
@@ -66,9 +62,11 @@ module.exports = grammar({
       $._newline,
     ),
 
-    _assert_amount: $ => seq($.amount, $._whitespace, $.assert, $._whitespace, $.amount),
+    _assert_amount: $ => seq($._whitechar, $.assert, $._whitechar, $._cost_amount),
 
-    _cost_amount: $ => seq($.amount, $._whitespace, $.cost, $._whitespace, $.amount),
+    _cost_amount: $ => prec.right(seq(
+      $.amount, optional(seq($._whitechar, $.cost, $._whitechar, $.amount)),
+    )),
 
     cost: _ => token(choice('@@', '@')),
 
@@ -283,7 +281,7 @@ module.exports = grammar({
     _whitechar: _ => choice(' ', '\t'),
     _newline: _ => /\n/,
     _blank_line: $ => seq(optional($._whitespace), $._newline),
-    _whitespace: $ => repeat1($._whitechar),
-    _spacer: _ => choice('  ', ' \t', '\t ', '\t\t')
+    _whitespace: $ => choice($._whitechar, $._spacer),
+    _spacer: $ => prec.right(seq($._whitechar, repeat1($._whitechar)))
   }
 });

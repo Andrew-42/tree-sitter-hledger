@@ -132,7 +132,7 @@ Transaction test - cost
 =======================
 
 2024-01-15 buy some shares, in two lots                 ; Cost can be noted.
-    assets:investments:2024-01-15     2.0 AAAA     @ $1.50  ; @  means per-unit cost
+    assets:investments:2024-01-15     2.0 AAAA @ $1.50  ; @  means per-unit cost
     assets:investments:2024-01-15-02  3.0 AAAA @@ $4    ; @@ means total cost
                       ; ^ Per-lot subaccounts are sometimes useful.
     assets:checking                 $-7
@@ -174,9 +174,9 @@ Transaction test - cost
                     (commodity)
                     (neg_quantity))))))
 
-=======================
-Transaction test - cost
-=======================
+=========================
+Transaction test - assert
+=========================
 
 2024-01-15 assert some account balances on this date
     assets:savings                    $0 = $10000

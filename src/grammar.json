@@ -169,8 +169,11 @@
       ]
     },
     "note": {
-      "type": "PATTERN",
-      "value": "\\S+(?: \\S+)*"
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "\\S+(?: \\S+)*"
+      }
     },
     "status": {
       "type": "CHOICE",
@@ -234,16 +237,8 @@
                           "name": "_spacer"
                         },
                         {
-                          "type": "CHOICE",
-                          "members": [
-                            {
-                              "type": "SYMBOL",
-                              "name": "_whitespace"
-                            },
-                            {
-                              "type": "BLANK"
-                            }
-                          ]
+                          "type": "SYMBOL",
+                          "name": "_cost_amount"
                         },
                         {
                           "type": "CHOICE",
@@ -253,12 +248,7 @@
                               "name": "_assert_amount"
                             },
                             {
-                              "type": "SYMBOL",
-                              "name": "_cost_amount"
-                            },
-                            {
-                              "type": "SYMBOL",
-                              "name": "amount"
+                              "type": "BLANK"
                             }
                           ]
                         }
@@ -296,11 +286,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "amount"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_whitespace"
+          "name": "_whitechar"
         },
         {
           "type": "SYMBOL",
@@ -308,38 +294,55 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_whitespace"
+          "name": "_whitechar"
         },
         {
           "type": "SYMBOL",
-          "name": "amount"
+          "name": "_cost_amount"
         }
       ]
     },
     "_cost_amount": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "amount"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_whitespace"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "cost"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_whitespace"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "amount"
-        }
-      ]
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "amount"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_whitechar"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "cost"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_whitechar"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "amount"
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
     },
     "cost": {
       "type": "TOKEN",
@@ -1393,32 +1396,37 @@
       ]
     },
     "_whitespace": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "SYMBOL",
-        "name": "_whitechar"
-      }
-    },
-    "_spacer": {
       "type": "CHOICE",
       "members": [
         {
-          "type": "STRING",
-          "value": "  "
+          "type": "SYMBOL",
+          "name": "_whitechar"
         },
         {
-          "type": "STRING",
-          "value": " \t"
-        },
-        {
-          "type": "STRING",
-          "value": "\t "
-        },
-        {
-          "type": "STRING",
-          "value": "\t\t"
+          "type": "SYMBOL",
+          "name": "_spacer"
         }
       ]
+    },
+    "_spacer": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_whitechar"
+          },
+          {
+            "type": "REPEAT1",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_whitechar"
+            }
+          }
+        ]
+      }
     }
   },
   "extras": [],
