@@ -16,7 +16,7 @@ account assets
 Account directive comment test
 ==============================
 
-account assets      ; test comment
+account assets      ; test text
 
 ---
 

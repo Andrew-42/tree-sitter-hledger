@@ -1,3 +1,19 @@
+======================
+Incomplete transaction
+======================
+
+2024-01-02 shopping  ; event
+
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (date)
+            (transaction_heading
+                (note))
+            (comment))))
+
 =======================
 Simple transaction test
 =======================
@@ -13,7 +29,7 @@ Simple transaction test
         (transaction
             (date)
             (transaction_heading
-            (note))
+                (note))
             (posting
                 (account)
                 (amount
@@ -26,7 +42,7 @@ Simple transaction test
 Transaction test
 ================
 
-2024-01-02 shopping
+2024-01-02 shopping     ; comment
     ; dnd transaction
     expenses: clothing        1 gold
     pouch
@@ -38,8 +54,10 @@ Transaction test
         (transaction
             (date)
             (transaction_heading
-            (note))
+                (note))
             (comment)
+            (posting
+                (comment))
             (posting
                 (account)
                 (amount
@@ -65,7 +83,8 @@ Transaction test - posting comment
             (date)
             (transaction_heading
             (note))
-            (comment)
+            (posting
+                (comment))
             (posting
                 (account)
                 (amount
@@ -74,3 +93,131 @@ Transaction test - posting comment
                 (comment))
             (posting
                 (account)))))
+
+================================
+Transaction test - more postings
+================================
+
+2024-01-02 shopping
+    expenses:clothing        1 gold
+    expenses:wands           5 gold
+    assets:pouch            -6 gold
+
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (date)
+            (transaction_heading
+                (note))
+            (posting
+                (account)
+                (amount
+                    (quantity)
+                    (commodity)))
+            (posting
+                (account)
+                (amount
+                    (quantity)
+                    (commodity)))
+            (posting
+                (account)
+                (amount
+                    (neg_quantity)
+                    (commodity))))))
+
+=======================
+Transaction test - cost
+=======================
+
+2024-01-15 buy some shares, in two lots                 ; Cost can be noted.
+    assets:investments:2024-01-15     2.0 AAAA     @ $1.50  ; @  means per-unit cost
+    assets:investments:2024-01-15-02  3.0 AAAA @@ $4    ; @@ means total cost
+                      ; ^ Per-lot subaccounts are sometimes useful.
+    assets:checking                 $-7
+
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (date)
+            (transaction_heading
+                (note))
+            (comment)
+            (posting
+                (account)
+                (amount
+                    (quantity)
+                    (commodity))
+                (cost)
+                (amount
+                    (commodity)
+                    (quantity))
+                (comment))
+            (posting
+                (account)
+                (amount
+                    (quantity)
+                    (commodity))
+                (cost)
+                (amount
+                    (commodity)
+                    (quantity))
+                (comment))
+            (posting
+                (comment))
+            (posting
+                (account)
+                (amount
+                    (commodity)
+                    (neg_quantity))))))
+
+=======================
+Transaction test - cost
+=======================
+
+2024-01-15 assert some account balances on this date
+    assets:savings                    $0 = $10000
+
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (date)
+            (transaction_heading
+                (note))
+            (posting
+                (account)
+                (amount
+                    (commodity)
+                    (quantity))
+                (assert)
+                (amount
+                    (commodity)
+                    (quantity)))
+            (posting
+                (account)
+                (amount
+                    (quantity)
+                    (commodity))
+                (assert)
+                (amount
+                    (neg_quantity)
+                    (commodity)))
+            (posting
+                (account)
+                (amount
+                    (quantity)
+                    (commodity))
+                (assert)
+                (amount
+                    (quantity)
+                    (commodity))
+                (cost)
+                (amount
+                    (commodity)
+                    (quantity))))))
+

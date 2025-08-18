@@ -10,8 +10,10 @@
 module.exports = grammar({
   name: 'hledger',
 
+  extras: _ => [],
+
   rules: {
-    source_file: $ => repeat(choice($.journal_item, $._blank_line)),
+    source_file: $ => repeat(choice($.journal_item, $._newline)),
 
     journal_item: $ => choice(
       $.transaction,
@@ -20,13 +22,13 @@ module.exports = grammar({
       $.top_comment,
     ),
 
-    transaction: $ => seq(
+    transaction: $ => prec.left(seq(
       $.date,
       $.transaction_heading,
       optional($._sep_comment),
-      optional($._newline),
-      repeat($.posting)
-    ),
+      $._newline,
+      repeat($.posting),
+    )),
 
     transaction_heading: $ => seq(
       optional(seq($._whitespace, $.status)),
@@ -35,27 +37,42 @@ module.exports = grammar({
       seq($._whitespace, $.note),
     ),
 
-    note: _ => /[^;\r\n\s]+( [^;\r\n\s]+)*/,
+    note: _ => /\S+(?: \S+)*/,
 
     status: _ => choice('*', '!'),
 
     code: _ => seq('(', /[^)]*/, ')'),
 
     posting: $ => seq(
-      $._indent,
+      $._whitespace,
       choice(
         $.comment,
         seq(
-          optional(seq($.status, $._whitespace)),
           $.account,
-          optional(seq($._separator, $.amount)),
+          optional(
+            seq(
+              $._spacer,
+              optional($._whitespace),
+              choice(
+                $._assert_amount,
+                $._cost_amount,
+                $.amount,
+              )
+            )
+          ),
           optional($._sep_comment),
         )
       ),
-      optional($._newline),
+      $._newline,
     ),
 
-    payee2: _ => /[^(*!\S;][^\n;]*/,
+    _assert_amount: $ => seq($.amount, $._whitespace, $.assert, $._whitespace, $.amount),
+
+    _cost_amount: $ => seq($.amount, $._whitespace, $.cost, $._whitespace, $.amount),
+
+    cost: _ => token(choice('@@', '@')),
+
+    assert: _ => token(choice('==*', '==', '=*', '=')),
 
     // Directives
     // ==========
@@ -75,7 +92,6 @@ module.exports = grammar({
       $._whitespace,
       $.file_path,
       optional($._sep_comment),
-      optional($._newline),
     ),
 
     decimal_mark_directive: $ => seq(
@@ -83,7 +99,6 @@ module.exports = grammar({
       $._whitespace,
       choice('.', ','),
       optional($._sep_comment),
-      optional($._newline),
     ),
 
     tag_directive: $ => seq(
@@ -91,12 +106,11 @@ module.exports = grammar({
       $._whitespace,
       $.tag,
       optional($._sep_comment),
-      optional($._newline),
     ),
 
     tag: _ => /[^\s; ]+/,
 
-    commodity_directive: $ => seq(
+    commodity_directive: $ => prec(1, seq(
       'commodity',
       $._whitespace,
       choice(
@@ -104,8 +118,7 @@ module.exports = grammar({
         $.amount
       ),
       optional($._sep_comment),
-      optional($._newline),
-    ),
+    )),
 
     price_directive: $ => seq(
       'P',
@@ -116,7 +129,6 @@ module.exports = grammar({
       $._whitespace,
       $.amount,
       optional($._sep_comment),
-      optional($._newline),
     ),
 
     payee_directive: $ => seq(
@@ -124,24 +136,23 @@ module.exports = grammar({
       $._whitespace,
       $.payee,
       optional($._sep_comment),
-      optional($._newline),
     ),
 
     payee: _ => /[^\r\n\s]+( [^\r\n\s]+)*/,
 
-    account_directive: $ => seq(
+    account_directive: $ => prec.left(seq(
       'account',
       $._whitespace,
       $.account,
       optional($._sep_comment),
-      optional($._newline),
+      $._newline,
       repeat($.account_subdirective)
-    ),
+    )),
 
-    account: _ => /[^;\r\n\s]+( [^;\r\n\s]+)*/,
+    account: _ => token(/[^;\s]+(?: \S+)*/),
 
     account_subdirective: $ => seq(
-      $._indent,
+      $._whitespace,
       choice(
         $.alias_subdirective,
         $.note_subdirective,
@@ -187,31 +198,44 @@ module.exports = grammar({
     // =========
 
     amount: $ => choice(
-      seq($.commodity, optional(' '), $.quantity),
-      seq($.commodity, optional(' '), $.neg_quantity),
-      seq($.quantity, optional(' '), $.commodity),
-      seq($.neg_quantity, optional(' '), $.commodity),
+      seq($.commodity, optional($._whitechar), $.quantity),
+      seq($.commodity, optional($._whitechar), $.neg_quantity),
+      seq($.quantity, optional($._whitechar), $.commodity),
+      seq($.neg_quantity, optional($._whitechar), $.commodity),
     ),
 
-    quantity: _ => token(/[+]?\d([\d., ]*\d)?/),
-    neg_quantity: _ => token(/-\d([\d., ]*\d)?/),
+    //quantity: _ => token(/[+]?\d+(?:[,. ]\d+)*/),
+    _digit: _ => /\d/,
+    _number: $ => prec.left(
+      seq(
+        $._digit,
+        repeat(
+          choice(
+            seq(choice(' ', ',', '.'), $._digit),
+            $._digit
+          )
+        )
+      )
+    ),
+
+    quantity: $ => $._number,
+    //neg_quantity: _ => token(/-\d+(?:[,. ]\d+)*/),
+    neg_quantity: $ => seq('-', $._number),
 
     commodity: _ => choice(
-      /\p{L}+/u,        // Unicode letters with u flag
-      /\p{Sc}/u,        // Unicode currency symbols with u flag
-      /"[^"\n]*"/       // Quoted strings (no u flag needed),
+      token(/\p{L}+/u),        // Unicode letters with u flag
+      token(/\p{Sc}/u),        // Unicode currency symbols with u flag
+      token(/"[^"\n]*"/)       // Quoted strings (no u flag needed),
     ),
 
-    date: $ => $._single_date,
-
-    _single_date: $ => choice(
+    date: $ => choice(
       seq($._4d, $._dsep, $._2d, $._dsep, $._2d),
       seq($._2d, $._dsep, $._2d, $._dsep, $._2d),
       seq($._2d, $._dsep, $._2d),
     ),
-    _dsep: _ => /[-\.\/]/,
-    _2d: _ => /\d{1,2}/,
-    _4d: _ => /\d{4}/,
+    _dsep: _ => token(/[-\.\/]/),
+    _2d: _ => token(/\d{1,2}/),
+    _4d: _ => token(/\d{4}/),
 
     // File path
     // =========
@@ -239,32 +263,27 @@ module.exports = grammar({
     // COMMENTS
     // ========
 
-    top_comment: $ => seq(
-      choice(';', '#'),
-      /[^\r\n]*/,
-      optional($._newline)
-    ),
+    // only top comment can also start with #
+    top_comment: _ => seq(choice(';', '#'), token.immediate(repeat(/[^\n]/))),
 
-    _sep_comment: $ => seq(
-      /[ \t][ \t]+/,  // Require at least 2 spaces before comment
-      $.comment // TODO: this comment can contain tags
-    ),
+    _sep_comment: $ => seq($._spacer, optional($._whitespace), $.comment),
 
-    comment: _ => seq(
-      ';',
-      /[^\r\n]*/
-    ),
+    // TODO: this comment can contain tags
+    comment: _ => seq(';', token.immediate(repeat(/[^\n]/))),
 
     block_comment: _ => seq(
       'comment',
-      repeat(/[^\r\n]*/), // BUG: incorrect when "end comment" is missing
-      optional('end comment')
+      repeat(choice(
+        token(/[^\n\r]+/),  // Any line content except newlines
+        choice(/\n/, /\r/, /\r\n/)   // Newlines
+      )),
+      `end comment`,
     ),
 
-    _separator: _ => /[ \t][ \t]+/,  // 2 spaces separator
-    _blank_line: _ => /\s*\r?\n/,
-    _whitespace: _ => /[ \t]+/,
-    _newline: _ => /\r?\n/,
-    _indent: _ => /[ \t]+/
+    _whitechar: _ => choice(' ', '\t'),
+    _newline: _ => /\n/,
+    _blank_line: $ => seq(optional($._whitespace), $._newline),
+    _whitespace: $ => repeat1($._whitechar),
+    _spacer: _ => choice('  ', ' \t', '\t ', '\t\t')
   }
 });

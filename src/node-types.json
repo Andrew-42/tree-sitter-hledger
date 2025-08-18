@@ -1,10 +1,5 @@
 [
   {
-    "type": "account",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "account_directive",
     "named": true,
     "fields": {},
@@ -254,7 +249,7 @@
     }
   },
   {
-    "type": "note",
+    "type": "neg_quantity",
     "named": true,
     "fields": {}
   },
@@ -299,11 +294,15 @@
           "named": true
         },
         {
+          "type": "assert",
+          "named": true
+        },
+        {
           "type": "comment",
           "named": true
         },
         {
-          "type": "status",
+          "type": "cost",
           "named": true
         }
       ]
@@ -335,6 +334,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "quantity",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "source_file",
@@ -441,7 +445,27 @@
     "fields": {}
   },
   {
+    "type": "\t",
+    "named": false
+  },
+  {
+    "type": "\t\t",
+    "named": false
+  },
+  {
+    "type": "\t ",
+    "named": false
+  },
+  {
     "type": " ",
+    "named": false
+  },
+  {
+    "type": " \t",
+    "named": false
+  },
+  {
+    "type": "  ",
     "named": false
   },
   {
@@ -466,6 +490,10 @@
   },
   {
     "type": ",",
+    "named": false
+  },
+  {
+    "type": "-",
     "named": false
   },
   {
@@ -525,8 +553,16 @@
     "named": false
   },
   {
+    "type": "account",
+    "named": true
+  },
+  {
     "type": "alias",
     "named": false
+  },
+  {
+    "type": "assert",
+    "named": true
   },
   {
     "type": "assert",
@@ -545,6 +581,10 @@
     "named": false
   },
   {
+    "type": "cost",
+    "named": true
+  },
+  {
     "type": "decimal-mark",
     "named": false
   },
@@ -557,15 +597,11 @@
     "named": false
   },
   {
-    "type": "neg_quantity",
-    "named": true
-  },
-  {
     "type": "note",
     "named": false
   },
   {
-    "type": "payee",
+    "type": "note",
     "named": true
   },
   {
@@ -573,16 +609,16 @@
     "named": false
   },
   {
-    "type": "quantity",
-    "named": true
-  },
-  {
-    "type": "tag",
+    "type": "payee",
     "named": true
   },
   {
     "type": "tag",
     "named": false
+  },
+  {
+    "type": "tag",
+    "named": true
   },
   {
     "type": "type",

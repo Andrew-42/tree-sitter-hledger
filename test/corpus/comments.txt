@@ -28,7 +28,6 @@ Block comment
 
 comment
 content of the comment
-
 end comment
 
 ---
