@@ -1,4 +1,5 @@
-2024-01-02 shopping
-    ; dnd transaction
-    expenses: clothing        1 gold  ; plate armor
-    pouch
+2024-01-15 assert some account balances on this date
+    ; Balances can be asserted in any transaction, with =, for extra error checking.
+    ; Assertion txns like this one can be made with hledger close --assert --show-costs
+    ;
+    assets:savings                    $0                   = $10000

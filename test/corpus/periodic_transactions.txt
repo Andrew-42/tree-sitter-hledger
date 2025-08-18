@@ -1,0 +1,28 @@
+====================
+Periodic transaction
+====================
+
+~ monthly  set budget goals  ; <- Note, 2+ spaces before the description.
+    (expenses:rent)      $1000
+    (expenses:food)       $500
+
+---
+
+(source_file
+    (journal_item
+    (periodic_transaction
+        (tilde)
+        (period)
+        (note)
+        (comment)
+        (posting
+        (account)
+        (amount
+            (commodity)
+            (quantity)))
+        (posting
+        (account)
+        (amount
+            (commodity)
+            (quantity))))))
+

@@ -238,6 +238,10 @@
           "named": true
         },
         {
+          "type": "periodic_transaction",
+          "named": true
+        },
+        {
           "type": "top_comment",
           "named": true
         },
@@ -247,11 +251,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "neg_quantity",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "note_subdirective",
@@ -272,6 +271,42 @@
         },
         {
           "type": "payee",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "period",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "periodic_transaction",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comment",
+          "named": true
+        },
+        {
+          "type": "note",
+          "named": true
+        },
+        {
+          "type": "period",
+          "named": true
+        },
+        {
+          "type": "posting",
+          "named": true
+        },
+        {
+          "type": "tilde",
           "named": true
         }
       ]
@@ -334,11 +369,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "quantity",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "source_file",
@@ -477,10 +507,6 @@
     "named": false
   },
   {
-    "type": "-",
-    "named": false
-  },
-  {
     "type": ".",
     "named": false
   },
@@ -534,11 +560,11 @@
   },
   {
     "type": "account",
-    "named": true
+    "named": false
   },
   {
     "type": "account",
-    "named": false
+    "named": true
   },
   {
     "type": "alias",
@@ -581,6 +607,10 @@
     "named": false
   },
   {
+    "type": "neg_quantity",
+    "named": true
+  },
+  {
     "type": "note",
     "named": false
   },
@@ -597,12 +627,20 @@
     "named": true
   },
   {
-    "type": "tag",
+    "type": "quantity",
     "named": true
   },
   {
     "type": "tag",
     "named": false
+  },
+  {
+    "type": "tag",
+    "named": true
+  },
+  {
+    "type": "tilde",
+    "named": true
   },
   {
     "type": "type",

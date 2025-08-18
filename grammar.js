@@ -10,6 +10,10 @@
 module.exports = grammar({
   name: 'hledger',
 
+  conflicts: $ => [
+    [$.period], [$._cost_amount]
+  ],
+
   extras: _ => [],
 
   rules: {
@@ -17,10 +21,26 @@ module.exports = grammar({
 
     journal_item: $ => choice(
       $.transaction,
+      $.periodic_transaction,
       $.directive,
       $.block_comment,
       $.top_comment,
     ),
+
+    periodic_transaction: $ => prec.left(seq(
+      $.tilde,
+      $._whitechar,
+      $.period,
+      optional(seq($._spacer, $.note)),
+      optional($._sep_comment),
+      $._newline,
+      repeat($.posting),
+    )),
+
+    tilde: _ => '~',
+
+    period: $ => seq(repeat1($._alphanum), repeat(seq($._whitechar, repeat1($._alphanum)))),
+
 
     transaction: $ => prec.left(seq(
       $.date,
@@ -62,11 +82,12 @@ module.exports = grammar({
       $._newline,
     ),
 
-    _assert_amount: $ => seq($._whitechar, $.assert, $._whitechar, $._cost_amount),
+    _assert_amount: $ => seq($._whitespace, $.assert, $._whitespace, $._cost_amount),
 
-    _cost_amount: $ => prec.right(seq(
-      $.amount, optional(seq($._whitechar, $.cost, $._whitechar, $.amount)),
-    )),
+    _cost_amount: $ => choice(
+      seq($.amount, $._whitespace, $.cost, $._whitespace, $.amount),
+      $.amount,
+    ),
 
     cost: _ => token(choice('@@', '@')),
 
@@ -202,23 +223,8 @@ module.exports = grammar({
       seq($.neg_quantity, optional($._whitechar), $.commodity),
     ),
 
-    //quantity: _ => token(/[+]?\d+(?:[,. ]\d+)*/),
-    _digit: _ => /\d/,
-    _number: $ => prec.left(
-      seq(
-        $._digit,
-        repeat(
-          choice(
-            seq(choice(' ', ',', '.'), $._digit),
-            $._digit
-          )
-        )
-      )
-    ),
-
-    quantity: $ => $._number,
-    //neg_quantity: _ => token(/-\d+(?:[,. ]\d+)*/),
-    neg_quantity: $ => seq('-', $._number),
+    quantity: _ => token(/[+]?\d+(?:[,. ]\d+)*/),
+    neg_quantity: _ => token(/-\d+(?:[,. ]\d+)*/),
 
     commodity: _ => choice(
       token(/\p{L}+/u),        // Unicode letters with u flag
@@ -282,6 +288,7 @@ module.exports = grammar({
     _newline: _ => /\n/,
     _blank_line: $ => seq(optional($._whitespace), $._newline),
     _whitespace: $ => choice($._whitechar, $._spacer),
-    _spacer: $ => prec.right(seq($._whitechar, repeat1($._whitechar)))
+    _spacer: $ => prec.right(seq($._whitechar, repeat1($._whitechar))),
+    _alphanum: _ => /[a-zA-Z0-9]/,
   }
 });

@@ -197,27 +197,39 @@ Transaction test - assert
                 (assert)
                 (amount
                     (commodity)
-                    (quantity)))
+                    (quantity))))))
+
+=========================
+Transaction test - assert
+=========================
+
+2024-01-15 assert some account balances on this date
+    ; Balances can be asserted in any transaction, with =, for extra error checking.
+    ; Assertion txns like this one can be made with hledger close --assert --show-costs
+    ;
+    assets:savings                    $0                   = $10000
+    assets:checking                   $0                   =   $493
+    assets:bank:gold                   0 gold              =    -10 gold
+    assets:pouch                       0 gold              =      4 gold
+    assets:pouch                       0 "Chocolate Frogs" =      3 "Chocolate Frogs"
+    assets:investments:2024-01-15      0.0 AAAA            =      2.0 AAAA @  $1.50
+    assets:investments:2024-01-15-02   0.0 AAAA            =      3.0 AAAA @@ $4
+    liabilities:credit card           $0                   =  $-500
+
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (date)
+            (transaction_heading
+                (note))
             (posting
                 (account)
                 (amount
-                    (quantity)
-                    (commodity))
+                    (commodity)
+                    (quantity))
                 (assert)
-                (amount
-                    (neg_quantity)
-                    (commodity)))
-            (posting
-                (account)
-                (amount
-                    (quantity)
-                    (commodity))
-                (assert)
-                (amount
-                    (quantity)
-                    (commodity))
-                (cost)
                 (amount
                     (commodity)
                     (quantity))))))
-
