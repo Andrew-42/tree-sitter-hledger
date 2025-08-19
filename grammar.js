@@ -11,7 +11,10 @@ module.exports = grammar({
   name: 'hledger',
 
   conflicts: $ => [
-    [$._cost_amount], [$.transaction_heading], [$.note, $.payee]
+    [$._cost_amount],
+    [$.transaction_heading],
+    [$.note, $.payee],
+    [$.auto_amount, $.amount],
   ],
 
   extras: _ => [],
@@ -22,12 +25,38 @@ module.exports = grammar({
     journal_item: $ => choice(
       $.transaction,
       $.periodic_transaction,
+      $.auto_transaction,
       $.directive,
       $.block_comment,
       $.top_comment,
     ),
 
     // TODO: add autoposting
+    auto_transaction: $ => prec.left(seq(
+      $.match,
+      $._whitechar,
+      $.query,
+      $._newline,
+      repeat($.autoposting),
+    )),
+
+    match: _ => '=',
+
+    query: _ => /\S+/,
+
+    autoposting: $ => seq(
+      $._whitespace,
+      $.account,
+      $._spacer,
+      optional($.multiply),
+      $.auto_amount,
+      optional($._sep_comment),
+      $._newline,
+    ),
+
+    auto_amount: $ => choice($.amount, $.neg_quantity, $.quantity),
+
+    multiply: _ => '*',
 
     periodic_transaction: $ => prec.left(seq(
       $.tilde,

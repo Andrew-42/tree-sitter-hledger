@@ -31,6 +31,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "auto_transaction"
+        },
+        {
+          "type": "SYMBOL",
           "name": "directive"
         },
         {
@@ -42,6 +46,116 @@
           "name": "top_comment"
         }
       ]
+    },
+    "auto_transaction": {
+      "type": "PREC_LEFT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "match"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_whitechar"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "query"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_newline"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "autoposting"
+            }
+          }
+        ]
+      }
+    },
+    "match": {
+      "type": "STRING",
+      "value": "="
+    },
+    "query": {
+      "type": "PATTERN",
+      "value": "\\S+"
+    },
+    "autoposting": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_whitespace"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "account"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_spacer"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "multiply"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "auto_amount"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_sep_comment"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_newline"
+        }
+      ]
+    },
+    "auto_amount": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "amount"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "neg_quantity"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "quantity"
+        }
+      ]
+    },
+    "multiply": {
+      "type": "STRING",
+      "value": "*"
     },
     "periodic_transaction": {
       "type": "PREC_LEFT",
@@ -1466,6 +1580,10 @@
     [
       "note",
       "payee"
+    ],
+    [
+      "auto_amount",
+      "amount"
     ]
   ],
   "precedences": [],

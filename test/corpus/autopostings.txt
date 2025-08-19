@@ -1,0 +1,52 @@
+==============================
+Transaction autoposting
+==============================
+
+; every time I buy food, schedule a dollar donation
+= expenses:food
+    (liabilities:charity)   $-1
+
+---
+
+(source_file
+    (journal_item
+        (top_comment))
+    (journal_item
+        (auto_transaction
+            (match)
+            (query)
+            (autoposting
+                (account)
+                (auto_amount
+                    (amount
+                        (commodity)
+                        (neg_quantity)))))))
+
+==============================
+Account directive comment test
+==============================
+
+; when I buy a gift, also deduct that amount from a budget envelope subaccount
+= expenses:gifts
+    assets:checking:gifts  *-1
+    assets:checking         *1
+
+---
+
+(source_file
+    (journal_item
+        (top_comment))
+    (journal_item
+        (auto_transaction
+            (match)
+            (query)
+            (autoposting
+                (account)
+                (multiply)
+                (auto_amount
+                    (neg_quantity)))
+            (autoposting
+                (account)
+                (multiply)
+                (auto_amount
+                    (quantity))))))

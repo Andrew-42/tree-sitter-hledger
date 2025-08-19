@@ -1,5 +1,4 @@
-2024-01-15 assert some account balances on this date
-    ; Balances can be asserted in any transaction, with =, for extra error checking.
-    ; Assertion txns like this one can be made with hledger close --assert --show-costs
-    ;
-    assets:savings                    $0                   = $10000
+; when I buy a gift, also deduct that amount from a budget envelope subaccount
+= expenses:gifts
+    assets:checking:gifts  *-1
+    assets:checking         *1
