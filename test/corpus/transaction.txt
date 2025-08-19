@@ -354,3 +354,31 @@ Transaction test - assert
         (amount
             (commodity)
             (neg_quantity))))))
+
+==============================
+Transaction test - tag comment
+==============================
+
+2017/1/16 bought groceries      ; transactiontag:
+    ; test note with tag transactiontag2:, the tag has no value
+    assets:checking        $-1
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (transaction_heading
+                (date)
+                (note))
+            (comment
+                (tag_value
+                    (tag)))
+            (posting
+                (comment
+                    (tag_value
+                        (tag))))
+            (posting
+                (account)
+                (amount
+                    (commodity)
+                    (neg_quantity))))))

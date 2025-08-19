@@ -1,4 +1,3 @@
-; when I buy a gift, also deduct that amount from a budget envelope subaccount
-= expenses:gifts
-    assets:checking:gifts  *-1
-    assets:checking         *1
+2017/1/16 bought groceries      ; transactiontag:
+    ; test note with tag transactiontag2:, the tag has no value
+    assets:checking        $-1

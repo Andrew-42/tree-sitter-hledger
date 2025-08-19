@@ -31,7 +31,6 @@ module.exports = grammar({
       $.top_comment,
     ),
 
-    // TODO: add autoposting
     auto_transaction: $ => prec.left(seq(
       $.match,
       $._whitechar,
@@ -157,7 +156,7 @@ module.exports = grammar({
       optional($._sep_comment),
     ),
 
-    tag: _ => /[^\s;]+/,
+    tag: _ => token(/[^\s;:]+/),
 
     commodity_directive: $ => prec(1, seq(
       'commodity',
@@ -302,8 +301,21 @@ module.exports = grammar({
 
     _sep_comment: $ => seq($._spacer, optional($._whitespace), $.comment),
 
-    // TODO: this comment can contain tags
     comment: _ => seq(';', token.immediate(repeat(/[^\n]/))),
+
+    // BUG: this comment can contain tags
+    tag_comment: $ => seq(
+      ';',
+      repeat(seq(
+        optional($._comment_word),
+        optional($.tag_value),
+        optional(';'),
+        $._whitechar
+      ))
+    ),
+    _comment_word: _ => token(/[^\s;:]+/),
+    tag_value: $ => seq($.tag, ':', optional(choice(optional($.value), seq(optional($.value), ',')))),
+    value: _ => token(/[^,\s]+(?: [^,\s]+)*/),
 
     block_comment: _ => seq(
       'comment',

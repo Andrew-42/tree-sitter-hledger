@@ -479,11 +479,6 @@
     "fields": {}
   },
   {
-    "type": "tag",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "tag_directive",
     "named": true,
     "fields": {},
@@ -652,11 +647,11 @@
   },
   {
     "type": "account",
-    "named": true
+    "named": false
   },
   {
     "type": "account",
-    "named": false
+    "named": true
   },
   {
     "type": "alias",
@@ -724,6 +719,10 @@
   },
   {
     "type": "query",
+    "named": true
+  },
+  {
+    "type": "tag",
     "named": true
   },
   {
