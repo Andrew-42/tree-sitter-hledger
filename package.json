@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-hledger",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Hledger grammar for tree-sitter",
   "repository": "https://github.com/tree-sitter/tree-sitter-hledger",
   "license": "MIT",

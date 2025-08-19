@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-hledger"
 description = "Hledger grammar for tree-sitter"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Andrew42"]
 license = "MIT"
 readme = "README.md"
