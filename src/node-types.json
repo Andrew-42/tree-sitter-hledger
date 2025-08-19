@@ -60,7 +60,17 @@
   {
     "type": "alias_subdirective",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "comment",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "amount",
@@ -88,7 +98,17 @@
   {
     "type": "assert_subdirective",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "comment",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "auto_amount",
@@ -171,7 +191,17 @@
   {
     "type": "check_subdirective",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "comment",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "code",
@@ -342,7 +372,17 @@
   {
     "type": "note_subdirective",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "comment",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "payee",
@@ -559,7 +599,17 @@
   {
     "type": "type_subdirective",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "comment",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "\t",

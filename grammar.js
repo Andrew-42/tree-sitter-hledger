@@ -215,31 +215,36 @@ module.exports = grammar({
     alias_subdirective: $ => seq(
       'alias',
       $._whitespace,
-      /[^\s;]+/
+      /[^\s;]+/,
+      optional($._sep_comment)
     ),
 
     note_subdirective: $ => seq(
       'note',
       $._whitespace,
-      /[^;\r\n]+/
+      /[^;\r\n]+/,
+      optional($._sep_comment)
     ),
 
     check_subdirective: $ => seq(
       'check',
       $._whitespace,
-      /[^;\r\n]+/
+      /[^;\r\n]+/,
+      optional($._sep_comment)
     ),
 
     assert_subdirective: $ => seq(
       'assert',
       $._whitespace,
-      /[^;\r\n]+/
+      /[^;\r\n]+/,
+      optional($._sep_comment)
     ),
 
     type_subdirective: $ => seq(
       'type',
       $._whitespace,
-      choice('A', 'L', 'E', 'R', 'X', 'C', 'V')
+      choice('A', 'L', 'E', 'R', 'X', 'C', 'V'),
+      optional($._sep_comment)
     ),
 
     // Utilities
@@ -304,6 +309,7 @@ module.exports = grammar({
     comment: _ => seq(';', token.immediate(repeat(/[^\n]/))),
 
     // BUG: this comment can contain tags
+    // tag comment is curerntly not used as it is not functional
     tag_comment: $ => seq(
       ';',
       repeat(seq(

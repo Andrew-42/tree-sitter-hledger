@@ -32,6 +32,11 @@ account expenses           ; type:X
                            ; A follow-on comment line, indented.
 account expenses:rent      ; Expense and revenue categories are also accounts.
                            ; Subaccounts inherit their parent's type.
+account expenses:flat      ; test account subdirectives
+    alias home             ; specify alias for account
+    note This account is about home
+    check commodity == USD  ; only dollars are allowed
+
 
 commodity $0.00         ; Declare valid commodities and their display styles.
 commodity 1.000,00 EUR
