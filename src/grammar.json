@@ -245,7 +245,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "_sep_comment"
+                "name": "_sep_tag_comment"
               },
               {
                 "type": "BLANK"
@@ -416,7 +416,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "comment"
+              "name": "tag_comment"
             },
             {
               "type": "SEQ",
@@ -463,7 +463,7 @@
                   "members": [
                     {
                       "type": "SYMBOL",
-                      "name": "_sep_comment"
+                      "name": "_sep_tag_comment"
                     },
                     {
                       "type": "BLANK"
@@ -705,11 +705,8 @@
       ]
     },
     "tag": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PATTERN",
-        "value": "[^\\s;:]+"
-      }
+      "type": "SYMBOL",
+      "name": "_word"
     },
     "commodity_directive": {
       "type": "PREC",
@@ -1475,18 +1472,6 @@
           "name": "_spacer"
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "_whitespace"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
           "type": "SYMBOL",
           "name": "comment"
         }
@@ -1511,6 +1496,19 @@
         }
       ]
     },
+    "_sep_tag_comment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_spacer"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tag_comment"
+        }
+      ]
+    },
     "tag_comment": {
       "type": "SEQ",
       "members": [
@@ -1521,54 +1519,30 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SEQ",
+            "type": "CHOICE",
             "members": [
               {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_comment_word"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "tag_value"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": ";"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
+                "type": "SYMBOL",
+                "name": "_word"
               },
               {
                 "type": "SYMBOL",
-                "name": "_whitechar"
+                "name": "tag_value"
+              },
+              {
+                "type": "STRING",
+                "value": ";"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_whitespace"
               }
             ]
           }
         }
       ]
     },
-    "_comment_word": {
+    "_word": {
       "type": "TOKEN",
       "content": {
         "type": "PATTERN",
@@ -1576,69 +1550,52 @@
       }
     },
     "tag_value": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "tag"
-        },
-        {
-          "type": "STRING",
-          "value": ":"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "value"
-                    },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                },
-                {
-                  "type": "SEQ",
-                  "members": [
-                    {
-                      "type": "CHOICE",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "value"
-                        },
-                        {
-                          "type": "BLANK"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "STRING",
-                      "value": ","
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        }
-      ]
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "tag"
+          },
+          {
+            "type": "STRING",
+            "value": ":"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "value"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
     },
     "value": {
       "type": "TOKEN",
       "content": {
-        "type": "PATTERN",
-        "value": "[^,\\s]+(?: [^,\\s]+)*"
+        "type": "PREC",
+        "value": 1,
+        "content": {
+          "type": "PATTERN",
+          "value": "[^,\\r\\n]*"
+        }
       }
     },
     "block_comment": {
@@ -1766,6 +1723,10 @@
   "conflicts": [
     [
       "_cost_amount"
+    ],
+    [
+      "_whitespace",
+      "_spacer"
     ],
     [
       "transaction_heading"

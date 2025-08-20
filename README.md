@@ -8,7 +8,7 @@ with hledger.
 ## Currently unsupported
 
 - **tags** in comments
-  - so far I didn't find a way to make it work
+  - tag values need space to be properly detected
 - some special syntax that is supported mainly for backward compatibility or
   ledger interoperability
 

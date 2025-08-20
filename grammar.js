@@ -12,6 +12,7 @@ module.exports = grammar({
 
   conflicts: $ => [
     [$._cost_amount],
+    [$._whitespace, $._spacer],
     [$.transaction_heading],
     [$.note, $.payee],
     [$.auto_amount, $.amount],
@@ -73,7 +74,7 @@ module.exports = grammar({
 
     transaction: $ => prec.left(seq(
       $.transaction_heading,
-      optional($._sep_comment),
+      optional($._sep_tag_comment),
       $._newline,
       repeat($.posting),
     )),
@@ -95,7 +96,7 @@ module.exports = grammar({
     posting: $ => seq(
       $._whitespace,
       choice(
-        $.comment,
+        $.tag_comment,
         seq(
           $.account,
           optional(
@@ -105,7 +106,7 @@ module.exports = grammar({
               optional($._assert_amount)
             )
           ),
-          optional($._sep_comment),
+          optional($._sep_tag_comment),
         )
       ),
       $._newline,
@@ -156,7 +157,7 @@ module.exports = grammar({
       optional($._sep_comment),
     ),
 
-    tag: _ => token(/[^\s;:]+/),
+    tag: $ => $._word,
 
     commodity_directive: $ => prec(1, seq(
       'commodity',
@@ -304,24 +305,27 @@ module.exports = grammar({
     // only top comment can also start with #
     top_comment: _ => seq(choice(';', '#'), token.immediate(repeat(/[^\n]/))),
 
-    _sep_comment: $ => seq($._spacer, optional($._whitespace), $.comment),
+    _sep_comment: $ => seq($._spacer, $.comment),
 
     comment: _ => seq(';', token.immediate(repeat(/[^\n]/))),
 
-    // BUG: this comment can contain tags
-    // tag comment is curerntly not used as it is not functional
+    _sep_tag_comment: $ => seq($._spacer, $.tag_comment),
+
     tag_comment: $ => seq(
       ';',
-      repeat(seq(
-        optional($._comment_word),
-        optional($.tag_value),
-        optional(';'),
-        $._whitechar
+      repeat(choice(
+        $._word,
+        $.tag_value,
+        ';',
+        $._whitespace,
       ))
     ),
-    _comment_word: _ => token(/[^\s;:]+/),
-    tag_value: $ => seq($.tag, ':', optional(choice(optional($.value), seq(optional($.value), ',')))),
-    value: _ => token(/[^,\s]+(?: [^,\s]+)*/),
+
+    _word: _ => token(/[^\s;:]+/),
+
+    tag_value: $ => prec.right(seq($.tag, ':', optional(seq($.value, ',')))),
+    // BUG: works only if tag value has space
+    value: _ => token(/[^,\r\n]*/),
 
     block_comment: _ => seq(
       'comment',

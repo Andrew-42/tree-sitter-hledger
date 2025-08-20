@@ -460,11 +460,11 @@
           "named": true
         },
         {
-          "type": "comment",
+          "type": "cost",
           "named": true
         },
         {
-          "type": "cost",
+          "type": "tag_comment",
           "named": true
         }
       ]
@@ -519,6 +519,26 @@
     "fields": {}
   },
   {
+    "type": "tag",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "tag_comment",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "tag_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "tag_directive",
     "named": true,
     "fields": {},
@@ -538,6 +558,25 @@
     }
   },
   {
+    "type": "tag_value",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "tag",
+          "named": true
+        },
+        {
+          "type": "value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "top_comment",
     "named": true,
     "fields": {}
@@ -551,11 +590,11 @@
       "required": true,
       "types": [
         {
-          "type": "comment",
+          "type": "posting",
           "named": true
         },
         {
-          "type": "posting",
+          "type": "tag_comment",
           "named": true
         },
         {
@@ -660,6 +699,10 @@
     "named": false
   },
   {
+    "type": ":",
+    "named": false
+  },
+  {
     "type": ";",
     "named": false
   },
@@ -697,11 +740,11 @@
   },
   {
     "type": "account",
-    "named": false
+    "named": true
   },
   {
     "type": "account",
-    "named": true
+    "named": false
   },
   {
     "type": "alias",
@@ -709,11 +752,11 @@
   },
   {
     "type": "assert",
-    "named": false
+    "named": true
   },
   {
     "type": "assert",
-    "named": true
+    "named": false
   },
   {
     "type": "check",
@@ -773,10 +816,6 @@
   },
   {
     "type": "tag",
-    "named": true
-  },
-  {
-    "type": "tag",
     "named": false
   },
   {
@@ -786,6 +825,10 @@
   {
     "type": "type",
     "named": false
+  },
+  {
+    "type": "value",
+    "named": true
   },
   {
     "type": "|",

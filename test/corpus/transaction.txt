@@ -12,7 +12,7 @@ Incomplete transaction
             (transaction_heading
                 (date)
                 (note))
-            (comment))))
+            (tag_comment))))
 
 =======================
 Simple transaction test
@@ -55,9 +55,9 @@ Transaction test
             (transaction_heading
                 (date)
                 (note))
-            (comment)
+            (tag_comment)
             (posting
-                (comment))
+                (tag_comment))
             (posting
                 (account)
                 (amount
@@ -84,13 +84,13 @@ Transaction test - posting comment
                 (date)
                 (note))
             (posting
-                (comment))
+                (tag_comment))
             (posting
                 (account)
                 (amount
                     (quantity)
                     (commodity))
-                (comment))
+                (tag_comment))
             (posting
                 (account)))))
 
@@ -150,25 +150,25 @@ Transaction test - heading
                 (code)
                 (note))
             (posting
-                (comment))
+                (tag_comment))
             (posting
-                (comment))
+                (tag_comment))
             (posting
-                (comment))
+                (tag_comment))
             (posting
-                (comment))
+                (tag_comment))
             (posting
                 (account)
                 (amount
                     (commodity)
                     (neg_quantity))
-                    (comment))
+                    (tag_comment))
             (posting
                 (account)
                 (amount
                     (commodity)
                     (quantity))
-                    (comment)))))
+                    (tag_comment)))))
 
 
 =======================
@@ -189,7 +189,7 @@ Transaction test - cost
             (transaction_heading
                 (date)
                 (note))
-            (comment)
+            (tag_comment)
             (posting
                 (account)
                 (amount
@@ -199,7 +199,7 @@ Transaction test - cost
                 (amount
                     (commodity)
                     (quantity))
-                (comment))
+                (tag_comment))
             (posting
                 (account)
                 (amount
@@ -209,9 +209,9 @@ Transaction test - cost
                 (amount
                     (commodity)
                     (quantity))
-                (comment))
+                (tag_comment))
             (posting
-                (comment))
+                (tag_comment))
             (posting
                 (account)
                 (amount
@@ -269,11 +269,11 @@ Transaction test - assert
             (date)
             (note))
         (posting
-            (comment))
+            (tag_comment))
         (posting
-            (comment))
+            (tag_comment))
         (posting
-            (comment))
+            (tag_comment))
         (posting
             (account)
         (amount
@@ -362,6 +362,7 @@ Transaction test - tag comment
 2017/1/16 bought groceries      ; transactiontag:
     ; test note with tag transactiontag2:, the tag has no value
     assets:checking        $-1
+
 ---
 
 (source_file
@@ -370,13 +371,43 @@ Transaction test - tag comment
             (transaction_heading
                 (date)
                 (note))
-            (comment
+            (tag_comment
                 (tag_value
                     (tag)))
             (posting
-                (comment
+                (tag_comment
                     (tag_value
                         (tag))))
+            (posting
+                (account)
+                (amount
+                    (commodity)
+                    (neg_quantity))))))
+
+====================================
+Transaction test - tag value comment
+====================================
+
+2017/1/16 bought groceries      ; transactiontag:
+    ; test note with tag transactiontag2:test value, the tag has a value
+    assets:checking        $-1
+
+---
+
+(source_file
+    (journal_item
+        (transaction
+            (transaction_heading
+                (date)
+                (note))
+            (tag_comment
+                (tag_value
+                    (tag)))
+            (posting
+                (tag_comment
+                    (tag_value
+                        (tag)
+                        (value))))
             (posting
                 (account)
                 (amount
