@@ -10,9 +10,14 @@ To test the parser run: `tree-sitter test`
 
 To use in Neovim: `:TSInstall! hledger`
 
-Highlight queries are in `queries/highlights.scm`. If your Neovim configuration
-provides its own `queries/hledger/highlights.scm`, keep that override in sync.
-Restart Neovim after updating an already loaded query.
+Highlight and fold queries are bundled in `queries/`. With nvim-treesitter,
+set `queries = "queries"` in the hledger parser's `install_info` to install
+them alongside the parser. For a local checkout, nvim-treesitter links this
+directory so query edits are available without copying files.
+
+Remove any overrides in your Neovim configuration's `queries/hledger/`
+directory to use the bundled queries. Restart Neovim after updating an already
+loaded query.
 
 ## Currently unsupported
 

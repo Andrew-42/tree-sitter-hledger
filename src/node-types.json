@@ -1043,11 +1043,11 @@
   },
   {
     "type": "account",
-    "named": true
+    "named": false
   },
   {
     "type": "account",
-    "named": false
+    "named": true
   },
   {
     "type": "alias",
@@ -1071,11 +1071,11 @@
   },
   {
     "type": "assert",
-    "named": true
+    "named": false
   },
   {
     "type": "assert",
-    "named": false
+    "named": true
   },
   {
     "type": "block_comment_body",
