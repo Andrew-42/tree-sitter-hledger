@@ -5,6 +5,60 @@
 This repo was inspired by [ledger-grammar] but tweaked in a way to work better
 with hledger.
 
+## Neovim plugin
+
+Install with lazy.nvim:
+
+```lua
+{
+  'Andrew-42/tree-sitter-hledger',
+  main = 'hledger',
+  lazy = false,
+  dependencies = {
+    'mason-org/mason.nvim',
+    { 'nvim-treesitter/nvim-treesitter', branch = 'main', lazy = false },
+  },
+  opts = {},
+}
+```
+
+Requires Neovim 0.12+, nvim-treesitter's `main` branch, Tree-sitter CLI
+0.26.1+ on `PATH` (installed through your package manager), and a C compiler.
+No manual clone, `make`, or `:TSInstall` step is needed.
+
+The plugin registers its installed checkout with nvim-treesitter, installs or
+updates the parser asynchronously, and links the bundled queries. It detects
+`.journal` and `.j` files as `hledger` and starts highlighting, including buffers
+opened while the first build is running. This overrides Neovim's default
+`ledger` filetype for `.journal` files.
+
+Plugin-manager updates are compiled on the next startup when parser sources
+change. `:TSUpdate hledger` also works. Restart Neovim after updating a parser
+that has already been loaded. Local grammar edits require `tree-sitter generate`
+before restarting or running `:TSUpdate hledger`.
+
+Optional settings (all default to `true`):
+
+```lua
+opts = {
+  install = true,   -- Automatically install/update the parser during setup
+  highlight = true, -- Start Tree-sitter highlighting in hledger buffers
+  filetypes = true, -- Register .journal and .j as hledger
+}
+```
+
+With another plugin manager, load nvim-treesitter first and call
+`require('hledger').setup()`. With `filetypes = false`, configure file detection
+yourself. For folding, set `foldmethod=expr` and
+`foldexpr=v:lua.vim.treesitter.foldexpr()` in hledger buffers.
+
+Existing manual installations may leave a real `queries/hledger` directory in
+Neovim's data site directory. Move it aside before the first plugin installation
+so nvim-treesitter can create its query symlink. Remove configuration overrides
+under `queries/hledger/` if you want to use the bundled queries.
+
+## Development and manual installation
+
 To build the parser run: `tree-sitter generate`
 To test the parser run: `tree-sitter test`
 
@@ -90,6 +144,15 @@ Use `libtree-sitter-hledger.so` on Linux. The Neovim check loads the freshly
 built parser and bundled queries, checks filetype registration and all eight
 fold types, and verifies exact fold ranges. It requires Neovim with
 `vim.treesitter.foldexpr` and `-l` support.
+
+To test the plugin against an existing nvim-treesitter `main` checkout, use an
+empty temporary site directory (requires `tree-sitter` on `PATH`):
+
+```sh
+NVIM_TREESITTER=/path/to/nvim-treesitter \
+HLEDGER_TEST_SITE="$(mktemp -d)/site" \
+nvim --headless -u NONE -i NONE -n -l test/plugin.lua
+```
 
 [hledger]: https://hledger.org/
 [ledger-grammar]: https://github.com/cbarrete/tree-sitter-ledger
