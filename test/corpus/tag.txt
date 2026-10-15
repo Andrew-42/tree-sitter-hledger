@@ -33,11 +33,11 @@ Tag with single-word value before comma
           (value))))))
 
 =========================================
-Tag with without value
+Tag with a space before its value
 =========================================
 
 2024-01-01 test
-    ; tag: this is not a value
+    ; tag: this is a value
 
 ---
 
@@ -49,7 +49,8 @@ Tag with without value
         (note))
       (tag_comment
         (tag_value
-          (tag))))))
+          (tag)
+          (value))))))
 
 =========================================
 Tag with value at end of line
@@ -131,5 +132,6 @@ Real-world tag with space after colon
         (note))
       (tag_comment
         (tag_value
-          (tag)))
+          (tag)
+          (value)))
       (tag_comment))))

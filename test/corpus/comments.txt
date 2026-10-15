@@ -34,4 +34,7 @@ end comment
 
 (source_file
   (journal_item
-    (block_comment)))
+    (block_comment
+      (block_comment_start)
+      (block_comment_body)
+      (block_comment_end))))

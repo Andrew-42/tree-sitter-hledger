@@ -1,0 +1,10 @@
+; comment
+comment
+body
+end comment
+ 	
+2024-01-07 Tags ; tag: value
+    assets:cash  $1 ; tag: value
+    ; next: value
+    equity:opening  $-1
+tag final

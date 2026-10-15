@@ -1,0 +1,189 @@
+====================
+All top-level comment markers and indentation
+====================
+
+; plain
+# plain
+* plain
+    ; indented
+    # indented
+    * indented
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (top_comment))
+  (journal_item
+    (top_comment))
+  (journal_item
+    (top_comment))
+  (journal_item
+    (top_comment))
+  (journal_item
+    (top_comment)))
+
+====================
+Block terminators occupy complete unindented lines
+====================
+
+comment
+text end comment here
+    end comment
+end comment suffix
+2024-01-07 Still a comment
+end comment
+2024-01-07 Sentinel
+
+---
+
+(source_file
+  (journal_item
+    (block_comment
+      (block_comment_start)
+      (block_comment_body)
+      (block_comment_end)))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note)))))
+
+====================
+Block delimiter trailing whitespace
+====================
+
+comment 	
+body
+end comment 	
+tag sentinel
+
+---
+
+(source_file
+  (journal_item
+    (block_comment
+      (block_comment_start)
+      (block_comment_body)
+      (block_comment_end)))
+  (journal_item
+    (directive
+      (tag_directive
+        (tag)))))
+
+====================
+Tag values trim whitespace and retain colons
+====================
+
+2024-01-07 Tags ; project: household budget  , next:done
+    ; tabbed:	value  , empty:   , final:kept
+    ; café:été, project-name:alpha, punctuation!:yes
+    ; prose before tag: value with another:colon, next:two
+    ; odd;name:value, comma,name:value
+    ; :ignored, final:kept
+    assets:cash  $1 ; posting: value  
+    ; continuation: value
+
+---
+
+(source_file
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment
+        (tag_value
+          (tag)
+          (value))
+        (tag_value
+          (tag)
+          (value)))
+      (tag_comment
+        (tag_value
+          (tag)
+          (value))
+        (tag_value
+          (tag))
+        (tag_value
+          (tag)
+          (value)))
+      (tag_comment
+        (tag_value
+          (tag)
+          (value))
+        (tag_value
+          (tag)
+          (value))
+        (tag_value
+          (tag)
+          (value)))
+      (tag_comment
+        (tag_value
+          (tag)
+          (value))
+        (tag_value
+          (tag)
+          (value)))
+      (tag_comment
+        (tag_value
+          (tag)
+          (value))
+        (tag_value
+          (tag)
+          (value)))
+      (tag_comment
+        (tag_value
+          (tag)
+          (value)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (tag_comment
+          (tag_value
+            (tag)
+            (value)))
+        (tag_comment
+          (tag_value
+            (tag)
+            (value)))))))
+
+====================
+Whitespace-only lines and trailing whitespace
+====================
+
+   
+	
+ 	 
+2024-01-07 Heading   
+    assets:cash  $1   
+    equity:opening  $-1	
+   
+tag trailing   
+
+---
+
+(source_file
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity)))))
+  (journal_item
+    (directive
+      (tag_directive
+        (tag)))))

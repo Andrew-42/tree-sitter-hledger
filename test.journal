@@ -476,3 +476,60 @@ P 2024-01-06 GBP $1.25
 2024-01-06 Directive boundary sentinel
     assets:checking       $1
     equity:examples       $-1
+
+###############################################################################
+
+# 9. Step 7: comments, tags, and file boundaries (failing and regression examples).
+# Tag failures can be structural even when no ERROR node is reported.
+
+; All three top-level comment markers also allow leading whitespace.
+* Star comment at column one
+    # Indented hash comment
+    * Indented star comment
+    ; Indented semicolon comment
+
+; Only a complete, unindented terminator line should close this block.
+comment
+This line contains end comment in the middle of its text.
+    end comment
+end comment followed by more text
+2024-01-07 This apparent transaction is still block-comment text
+end comment
+2024-01-07 Transaction after the real block terminator
+
+; Spaces and tabs after the block delimiters are permitted.
+comment   
+Block with trailing whitespace on its delimiter lines.
+end comment   
+
+; Values start after optional whitespace and end at a comma or newline.
+; Each tag below should retain its own name and optional value.
+2024-01-07 Tag whitespace and comma boundaries  ; project: household budget  , next:done
+    ; tabbed:	value after a tab
+    ; empty:, spaced-empty:   , last:present
+    ; project-name:alpha, café:été, punctuation!:yes
+    ; prose before tag: value with spaces and another:colon, next:two
+    ; orphan colon: , :ignored, final:kept
+    assets:checking       $1  ; posting: value after a space  , next:done
+    ; continuation: value after a space
+    equity:examples       $-1
+
+; The next three blank lines contain spaces, a tab, and mixed whitespace.
+   
+	
+ 	 
+; Trailing whitespace must not create an extra journal item.
+2024-01-07 Heading with trailing whitespace   
+    assets:checking       $1   
+    equity:examples       $-1	
+tag trailing-whitespace   
+
+; The next transaction uses literal CRLF endings; the final posting ends at EOF.
+2024-01-07 CRLF heading
+    assets:checking       $1
+    equity:examples       $-1
+
+; Final transaction has no newline after its last posting.
+2024-01-07 Missing final newline
+    assets:checking       $1
+    equity:examples       $-1

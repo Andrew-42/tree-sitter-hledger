@@ -24,18 +24,24 @@ module.exports = grammar({
   externals: $ => [
     $.value,
     $._error_sentinel,
+    $._eof,
+    $.block_comment_body,
+    $._blank_eof,
+    $.block_comment_end,
   ],
 
   conflicts: $ => [
     [$.amount],
     [$._cost_amount],
     [$._whitespace, $._spacer],
+    [$.tag_directive],
+    [$.payee_directive],
   ],
 
   extras: _ => [],
 
   rules: {
-    source_file: $ => repeat(choice($.journal_item, $._newline)),
+    source_file: $ => repeat(choice($.journal_item, $._blank_line, $._blank_eof)),
 
     journal_item: $ => choice(
       $.transaction,
@@ -46,12 +52,12 @@ module.exports = grammar({
       $.top_comment,
     ),
 
-    auto_transaction: $ => prec.left(seq(
+    auto_transaction: $ => prec.right(seq(
       $.match,
       optional($._whitespace),
       optional($.query),
       optional($.tag_comment),
-      $._newline,
+      $._line_end,
       repeat($._continuation_comment),
       repeat($.autoposting),
     )),
@@ -66,13 +72,13 @@ module.exports = grammar({
 
     multiply: _ => '*',
 
-    periodic_transaction: $ => prec.left(seq(
+    periodic_transaction: $ => prec.right(seq(
       $.tilde,
       optional($._whitespace),
       $.period,
       optional(choice(seq($._spacer, headingFields($)), $._whitechar)),
       optional($.tag_comment),
-      $._newline,
+      $._line_end,
       repeat($._continuation_comment),
       repeat($.posting),
     )),
@@ -82,10 +88,10 @@ module.exports = grammar({
     // hledger reads single-spaced text, then validates the period expression.
     period: _ => token(/[^;\s]+(?: [^;\s]+)*/u),
 
-    transaction: $ => prec.left(seq(
+    transaction: $ => prec.right(seq(
       $.transaction_heading,
       optional($.tag_comment),
-      $._newline,
+      $._line_end,
       repeat($._continuation_comment),
       repeat($.posting),
     )),
@@ -123,7 +129,7 @@ module.exports = grammar({
     _balanced_account_name: _ => token(/[^\s\]]+(?:[^\S\r\n][^\s\]]+)*/u),
 
     _continuation_comment: $ => seq(
-      alias($._indented_tag_comment, $.tag_comment), $._newline,
+      alias($._indented_tag_comment, $.tag_comment), $._line_end,
     ),
 
     // Include the semicolon in this token so indentation alone cannot consume
@@ -194,9 +200,9 @@ module.exports = grammar({
       repeat($.directive_content),
     ),
 
-    tag: $ => $._word,
+    tag: $ => prec(1, $._word),
 
-    commodity_directive: $ => prec(1, seq(
+    commodity_directive: $ => prec.right(seq(
       'commodity',
       $._whitespace,
       choice(
@@ -232,7 +238,7 @@ module.exports = grammar({
 
     payee: _ => token(/[^;|\r\n\s][^;|\r\n]*/),
 
-    account_directive: $ => prec.left(seq(
+    account_directive: $ => prec.right(seq(
       'account',
       $._whitespace,
       $.account,
@@ -327,7 +333,7 @@ module.exports = grammar({
 
     _directive_payee: _ => token(choice(/"[^"\r\n]*"/u, /[^;\s][^;\r\n]*/u)),
 
-    _directive_eol: $ => seq(optional($._whitespace), $._newline),
+    _directive_eol: $ => seq(optional($._whitespace), $._line_end),
 
     _directive_comment: $ => seq(optional($._whitespace), $.comment),
 
@@ -403,12 +409,12 @@ module.exports = grammar({
     // COMMENTS
     // ========
 
-    // only top comment can also start with #
-    top_comment: _ => seq(choice(';', '#'), token.immediate(repeat(/[^\n]/))),
+    // Prefer posting/status and continuation tokens when inside an entry.
+    top_comment: $ => prec(-1, seq(optional($._whitespace), token(prec(-2, /[;#*][^\r\n]*/u)))),
 
     _sep_comment: $ => seq($._spacer, $.comment),
 
-    comment: _ => seq(';', token.immediate(repeat(/[^\n]/))),
+    comment: _ => token(/;[^\r\n]*/u),
 
     _sep_tag_comment: $ => seq($._spacer, $.tag_comment),
 
@@ -418,28 +424,32 @@ module.exports = grammar({
     ),
 
     _tag_comment_contents: $ => repeat1(choice(
-      $._word,
+      $._comment_word,
       $.tag_value,
       ';',
+      ',',
+      ':',
       $._whitespace,
     )),
 
-    _word: _ => token(/[^\s;:]+/),
+    _word: _ => token(/[^\s;:]+/u),
+    _comment_word: _ => token(/[^\s:]+/u),
+    _comment_tag: $ => prec(1, alias($._comment_word, $.tag)),
 
-    tag_value: $ => prec.right(seq($.tag, ':', optional($.value))),
+    tag_value: $ => prec.right(seq($._comment_tag, ':', optional($.value))),
 
-    block_comment: _ => seq(
-      'comment',
-      repeat(choice(
-        token(/[^\n\r]+/),  // Any line content except newlines
-        choice(/\n/, /\r/, /\r\n/)   // Newlines
-      )),
-      `end comment`,
+    block_comment: $ => seq(
+      $.block_comment_start,
+      optional($.block_comment_body),
+      choice($.block_comment_end, $._eof),
     ),
 
+    block_comment_start: _ => token(/comment[ \t]*\r?\n/u),
+
     _whitechar: _ => choice(' ', '\t'),
-    _newline: _ => /\n/,
-    _blank_line: $ => seq(optional($._whitespace), $._newline),
+    _newline: _ => /\r?\n/,
+    _line_end: $ => choice($._newline, $._eof),
+    _blank_line: _ => token(/[ \t]*\r?\n/u),
     _whitespace: $ => choice($._whitechar, $._spacer),
     _spacer: $ => prec.right(seq($._whitechar, repeat1($._whitechar))),
     _alphanum: _ => /[a-zA-Z0-9]/,
@@ -472,7 +482,7 @@ function postingRule($, automatic) {
     )),
     optional($._whitespace),
     optional($.tag_comment),
-    $._newline,
+    $._line_end,
     repeat($._continuation_comment),
   ));
 }

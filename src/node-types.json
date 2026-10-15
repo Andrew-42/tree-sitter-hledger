@@ -263,7 +263,25 @@
   {
     "type": "block_comment",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block_comment_body",
+          "named": true
+        },
+        {
+          "type": "block_comment_end",
+          "named": true
+        },
+        {
+          "type": "block_comment_start",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "check_subdirective",
@@ -279,11 +297,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "comment",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "commodity",
@@ -977,10 +990,6 @@
     "named": false
   },
   {
-    "type": "#",
-    "named": false
-  },
-  {
     "type": "(",
     "named": false
   },
@@ -1069,6 +1078,18 @@
     "named": false
   },
   {
+    "type": "block_comment_body",
+    "named": true
+  },
+  {
+    "type": "block_comment_end",
+    "named": true
+  },
+  {
+    "type": "block_comment_start",
+    "named": true
+  },
+  {
     "type": "check",
     "named": false
   },
@@ -1078,7 +1099,7 @@
   },
   {
     "type": "comment",
-    "named": false
+    "named": true
   },
   {
     "type": "commodity",
@@ -1102,10 +1123,6 @@
   },
   {
     "type": "end apply year",
-    "named": false
-  },
-  {
-    "type": "end comment",
     "named": false
   },
   {
@@ -1178,11 +1195,11 @@
   },
   {
     "type": "year",
-    "named": true
+    "named": false
   },
   {
     "type": "year",
-    "named": false
+    "named": true
   },
   {
     "type": "|",

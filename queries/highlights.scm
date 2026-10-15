@@ -1,8 +1,6 @@
 ; Keywords
 [
   "decimal-mark"
-  "comment"
-  "end comment"
   "account"
   "tag"
   "commodity"
@@ -70,5 +68,10 @@
   (top_comment)
   (block_comment)
 ] @comment
+
+[
+  (block_comment_start)
+  (block_comment_end)
+] @keyword
 
 (value) @number

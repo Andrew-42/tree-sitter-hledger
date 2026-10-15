@@ -62,11 +62,13 @@ Verified against the hledger 1.52 `JournalReader` and `Common` readers. Coverage
 
 ## 7. Fix comments, tags, and file boundaries
 
-- [ ] Audit all supported top-level comment markers.
-- [ ] Make block-comment terminators line-aware.
-- [ ] Review tag names, empty values, comma boundaries, and whitespace behavior in `src/scanner.c`.
-- [ ] Accept whitespace-only blank lines and trailing whitespace.
-- [ ] Verify CRLF and files without a final newline.
+- [x] Audit all supported top-level comment markers.
+- [x] Make block-comment terminators line-aware.
+- [x] Review tag names, empty values, comma boundaries, and whitespace behavior in `src/scanner.c`.
+- [x] Accept whitespace-only blank lines and trailing whitespace.
+- [x] Verify CRLF and files without a final newline.
+
+Coverage: `test/corpus/comments_boundaries.txt`, corrected tag expectations in `test/corpus/tag.txt`, and byte-preserving fixtures in `test/fixtures/file_boundaries/`. Run the latter with `sh test/file-boundaries.sh [tree-sitter CLI path]`. Checked against the retained 1.52 reader sources; no hledger executable comparison was performed.
 
 ## 8. Cover compatibility annotations
 
