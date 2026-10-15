@@ -125,14 +125,6 @@
         {
           "type": "amount",
           "named": true
-        },
-        {
-          "type": "neg_quantity",
-          "named": true
-        },
-        {
-          "type": "quantity",
-          "named": true
         }
       ]
     }
@@ -156,6 +148,10 @@
         {
           "type": "query",
           "named": true
+        },
+        {
+          "type": "tag_comment",
+          "named": true
         }
       ]
     }
@@ -173,15 +169,39 @@
           "named": true
         },
         {
+          "type": "amount",
+          "named": true
+        },
+        {
+          "type": "assert",
+          "named": true
+        },
+        {
           "type": "auto_amount",
           "named": true
         },
         {
-          "type": "comment",
+          "type": "balanced_virtual_account",
+          "named": true
+        },
+        {
+          "type": "cost",
           "named": true
         },
         {
           "type": "multiply",
+          "named": true
+        },
+        {
+          "type": "status",
+          "named": true
+        },
+        {
+          "type": "tag_comment",
+          "named": true
+        },
+        {
+          "type": "virtual_account",
           "named": true
         }
       ]
@@ -431,11 +451,15 @@
       "required": true,
       "types": [
         {
-          "type": "comment",
+          "type": "code",
           "named": true
         },
         {
           "type": "note",
+          "named": true
+        },
+        {
+          "type": "payee",
           "named": true
         },
         {
@@ -444,6 +468,10 @@
         },
         {
           "type": "posting",
+          "named": true
+        },
+        {
+          "type": "status",
           "named": true
         },
         {

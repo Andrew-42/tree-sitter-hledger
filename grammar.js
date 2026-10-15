@@ -48,36 +48,30 @@ module.exports = grammar({
 
     auto_transaction: $ => prec.left(seq(
       $.match,
-      $._whitechar,
-      $.query,
+      optional($._whitespace),
+      optional($.query),
+      optional($.tag_comment),
       $._newline,
+      repeat($._continuation_comment),
       repeat($.autoposting),
     )),
 
     match: _ => '=',
 
-    query: _ => /\S+/,
+    query: _ => token(/[^;\r\n\s][^;\r\n]*/u),
 
-    autoposting: $ => seq(
-      $._whitespace,
-      $.account,
-      $._spacer,
-      optional($.multiply),
-      $.auto_amount,
-      optional($._sep_comment),
-      $._newline,
-    ),
+    autoposting: $ => postingRule($, true),
 
-    auto_amount: $ => choice($.amount, prec(1, $.neg_quantity), prec(1, $.quantity)),
+    auto_amount: $ => $.amount,
 
     multiply: _ => '*',
 
     periodic_transaction: $ => prec.left(seq(
       $.tilde,
-      $._whitechar,
+      optional($._whitespace),
       $.period,
-      optional(seq($._spacer, alias($._periodic_note, $.note))),
-      optional($._sep_comment),
+      optional(choice(seq($._spacer, headingFields($)), $._whitechar)),
+      optional($.tag_comment),
       $._newline,
       repeat($._continuation_comment),
       repeat($.posting),
@@ -85,9 +79,8 @@ module.exports = grammar({
 
     tilde: _ => '~',
 
-    period: _ => /[a-zA-Z0-9-]+(?: [a-zA-Z0-9-]+)*/,
-
-    _periodic_note: _ => token(/[^*!()|\s]+(?: [^*!()|\s]+)*/),
+    // hledger reads single-spaced text, then validates the period expression.
+    period: _ => token(/[^;\s]+(?: [^;\s]+)*/u),
 
     transaction: $ => prec.left(seq(
       $.transaction_heading,
@@ -100,19 +93,7 @@ module.exports = grammar({
     transaction_heading: $ => seq(
       $.date,
       optional($.secondary_date),
-      optional(seq(
-        $._whitespace,
-        optional(choice(
-          seq($.status, optional(seq($._whitespace, $.code))),
-          $.code,
-        )),
-        optional($._whitespace),
-        optional(choice(
-          seq(optional($.payee), '|', optional($.note)),
-          alias($._description_note, $.note),
-        )),
-        optional($._whitespace),
-      )),
+      optional(seq($._whitespace, headingFields($))),
     ),
 
     secondary_date: $ => seq('=', $.date),
@@ -125,26 +106,7 @@ module.exports = grammar({
 
     code: _ => token(prec(2, /\([^\)\r\n]*\)/)),
 
-    posting: $ => prec.right(seq(
-      $._whitespace,
-      optional(seq($.status, optional($._whitespace))),
-      choice(
-        alias($._real_account, $.account),
-        $.virtual_account,
-        $.balanced_virtual_account,
-      ),
-      optional(seq(
-        $._spacer,
-        choice(
-          seq($._cost_amount, optional($._assert_amount)),
-          $._assert_amount,
-        ),
-      )),
-      optional($._whitespace),
-      optional($.tag_comment),
-      $._newline,
-      repeat($._continuation_comment),
-    )),
+    posting: $ => postingRule($, false),
 
     // A single space or tab belongs to the name; repeated whitespace ends it.
     _real_account: _ => token(/[^;*!(\[\s][^\s]*(?:[^\S\r\n][^\s]+)*/u),
@@ -409,3 +371,50 @@ module.exports = grammar({
     _alphanum: _ => /[a-zA-Z0-9]/,
   }
 });
+
+/** Build the shared posting syntax, enabling multipliers in automatic rules. */
+function postingRule($, automatic) {
+  return prec.right(seq(
+    $._whitespace,
+    optional(seq($.status, optional($._whitespace))),
+    choice(
+      alias($._real_account, $.account),
+      $.virtual_account,
+      $.balanced_virtual_account,
+    ),
+    optional(seq(
+      $._spacer,
+      choice(
+        seq(
+          ...(automatic ? [
+            optional($.multiply),
+            $.auto_amount,
+            optional(seq(optional($._whitespace), $.cost, optional($._whitespace), $.amount)),
+          ] : [$._cost_amount]),
+          optional($._assert_amount),
+        ),
+        $._assert_amount,
+      ),
+    )),
+    optional($._whitespace),
+    optional($.tag_comment),
+    $._newline,
+    repeat($._continuation_comment),
+  ));
+}
+
+/** Build the shared optional status, code, and description fields. */
+function headingFields($) {
+  return seq(
+    optional(choice(
+      seq($.status, optional(seq($._whitespace, $.code))),
+      $.code,
+    )),
+    optional($._whitespace),
+    optional(choice(
+      seq(optional($.payee), '|', optional($.note)),
+      alias($._description_note, $.note),
+    )),
+    optional($._whitespace),
+  );
+}

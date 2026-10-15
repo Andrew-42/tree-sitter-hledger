@@ -47,11 +47,11 @@ Audit date: 2026-10-15. Reader source was inspected at tag `1.52`. Neither `hled
 
 | Construct | Current grammar rules | Existing corpus evidence | Status / next work |
 | --- | --- | --- | --- |
-| Periodic expression and description | `periodic_transaction`, `period`, `note` | `periodic_transactions.txt`: monthly budget | Covered simple monthly form; gap: period regex excludes `/`, `.`, commas and other period-expression syntax. Verify expression families against `periodexprp`. Step 5. |
-| Periodic status, code, heading comments | `periodic_transaction` | Comment covered in monthly example | Gap: no status/code productions; reader reuses `statusp`, `codep`, `descriptionp`. Step 5. |
-| Automatic query, quoted/multiple terms, comments | `auto_transaction`, `query` | `autopostings.txt`: single account query | Gap: `query` is one non-whitespace token, while reader consumes a description and comment. Step 5. |
-| No space after `~` / `=` | `_whitechar` required in both headings | None | Gap: reader calls zero-or-more `skipNonNewlineSpaces`. Step 5. |
-| Multiplier and posting syntax in automatic rules | `autoposting`, `multiply`, `auto_amount` | `autopostings.txt`: `*-1`, `*1`, `$-1` | Covered basic multiplier; gap: separate autoposting grammar omits status, assertions, costs, tags, and optional amounts supported by shared `postingphelper`. Verify multiplier spacing. Step 5. |
+| Periodic expression and description | `periodic_transaction`, `period`, `note` | `recurring_rules.txt`: Slash/dot ranges, weekday lists, annual dates, relative periods | Fixed in step 5: preserve single-spaced period text up to the heading delimiter; calendar validation remains with hledger. |
+| Periodic status, code, heading comments | `periodic_transaction` | `recurring_rules.txt`: Pending/cleared status, code, payee/note, heading and posting comments | Fixed in step 5: shared heading fields and tag-aware continuation comments. |
+| Automatic query, quoted/multiple terms, comments | `auto_transaction`, `query` | `recurring_rules.txt`: Multiple terms, quoted text, rule and posting comments | Fixed in step 5: query text ends at semicolon/newline; query semantics remain with hledger. |
+| No space after `~` / `=` | `periodic_transaction`, `auto_transaction` | `recurring_rules.txt`: Compact and multiple-space rule markers | Fixed in step 5: optional horizontal whitespace after either marker. |
+| Multiplier and posting syntax in automatic rules | `autoposting`, `multiply`, `auto_amount` | `recurring_rules.txt`: Multipliers, statuses, wrappers, costs, assertions, assignments, missing amounts | Fixed in step 5: shared posting syntax; multiplier directly precedes the amount, matching the 1.52 reader. |
 
 ## Directives
 

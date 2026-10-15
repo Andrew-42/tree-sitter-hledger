@@ -9,18 +9,19 @@ Transaction autoposting
 ---
 
 (source_file
-    (journal_item
-        (top_comment))
-    (journal_item
-        (auto_transaction
-            (match)
-            (query)
-            (autoposting
-                (account)
-                (auto_amount
-                    (amount
-                        (commodity)
-                        (neg_quantity)))))))
+  (journal_item
+    (top_comment))
+  (journal_item
+    (auto_transaction
+      (match)
+      (query)
+      (autoposting
+        (virtual_account
+          (account))
+        (auto_amount
+          (amount
+            (commodity)
+            (neg_quantity)))))))
 
 ==============================
 Account directive comment test
@@ -34,19 +35,21 @@ Account directive comment test
 ---
 
 (source_file
-    (journal_item
-        (top_comment))
-    (journal_item
-        (auto_transaction
-            (match)
-            (query)
-            (autoposting
-                (account)
-                (multiply)
-                (auto_amount
-                    (neg_quantity)))
-            (autoposting
-                (account)
-                (multiply)
-                (auto_amount
-                    (quantity))))))
+  (journal_item
+    (top_comment))
+  (journal_item
+    (auto_transaction
+      (match)
+      (query)
+      (autoposting
+        (account)
+        (multiply)
+        (auto_amount
+          (amount
+            (neg_quantity))))
+      (autoposting
+        (account)
+        (multiply)
+        (auto_amount
+          (amount
+            (quantity)))))))

@@ -1,0 +1,570 @@
+==============================
+Slash dates in periodic ranges
+==============================
+
+; Period expressions with slash/dot dates and comma-separated weekdays.
+~ monthly from 2024/01/01 to 2025/01/01  Slash date range
+    (expenses:budget)      $100
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (note)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))))))
+
+==============================
+Dot dates in periodic ranges
+==============================
+
+~ monthly from 2024.01.01 to 2025.01.01  Dot date range
+    (expenses:budget)      $100
+
+---
+
+(source_file
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (note)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))))))
+
+==============================
+Comma-separated periodic weekdays
+==============================
+
+~ every mon,wed,fri  Weekday schedule
+    (expenses:budget)      $10
+
+---
+
+(source_file
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (note)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))))))
+
+==============================
+Annual month and day interval
+==============================
+
+~ every 11/05  Annual reminder
+    (expenses:budget)      $10
+
+---
+
+(source_file
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (note)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))))))
+
+==============================
+Fortnightly interval
+==============================
+
+; Regression controls for word-based intervals and relative periods.
+~ every 2 weeks  Fortnightly budget
+    (expenses:budget)      $100
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (note)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))))))
+
+==============================
+Quarterly relative period
+==============================
+
+~ quarterly in 2024  Quarterly budget
+    (expenses:budget)      $100
+
+---
+
+(source_file
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (note)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))))))
+
+==============================
+Periodic pending status code payee and comments
+==============================
+
+; Two spaces separate the period from status, code, and description.
+~ monthly  ! (BUDGET) Landlord|rent! (monthly)  ; heading comment
+    ; This continuation belongs to the periodic heading.
+    ! (expenses:rent)      $1000  ; posting comment
+    ; This continuation belongs to the virtual posting.
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (status)
+      (code)
+      (payee)
+      (note)
+      (tag_comment)
+      (tag_comment)
+      (posting
+        (status)
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))
+        (tag_comment)
+        (tag_comment)))))
+
+==============================
+Periodic cleared status and balanced virtual postings
+==============================
+
+~ monthly  * (SAVE) Savings transfer
+    [assets:reserved]      $100
+    [equity:reserved]      $-100
+
+---
+
+(source_file
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (status)
+      (code)
+      (note)
+      (posting
+        (balanced_virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (balanced_virtual_account
+          (account))
+        (amount
+          (commodity)
+          (neg_quantity))))))
+
+==============================
+Periodic comment without description
+==============================
+
+; A description is optional, including when a heading has a comment.
+~ monthly  ; heading comment without a description
+    (expenses:budget)      $100
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (tag_comment)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))))))
+
+==============================
+Compact periodic marker
+==============================
+
+; Whitespace after the rule marker is optional or can be multiple spaces.
+~monthly  Compact marker
+    (expenses:budget)      $100
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (note)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))))))
+
+==============================
+Multiple spaces after periodic marker
+==============================
+
+~   monthly  Spaced marker
+    (expenses:budget)      $100
+
+---
+
+(source_file
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (note)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))))))
+
+==============================
+Multiple automatic query terms
+==============================
+
+; Multiple query terms, including quotes containing spaces.
+= expenses:food not:desc:refund
+    (expenses:budget)      *1
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (auto_transaction
+      (match)
+      (query)
+      (autoposting
+        (virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (quantity)))))))
+
+==============================
+Quoted automatic query terms
+==============================
+
+= acct:expenses desc:"weekly groceries" not:tag:skip
+    (expenses:budget)      *1
+
+---
+
+(source_file
+  (journal_item
+    (auto_transaction
+      (match)
+      (query)
+      (autoposting
+        (virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (quantity)))))))
+
+==============================
+Automatic heading and posting comments
+==============================
+
+; Rule comments and posting continuation comments have separate owners.
+= expenses:food  ; automatic rule comment
+    ; This continuation belongs to the automatic rule heading.
+    (expenses:budget)      *1  ; posting comment
+    ; This continuation belongs to the virtual posting.
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (auto_transaction
+      (match)
+      (query)
+      (tag_comment)
+      (tag_comment)
+      (autoposting
+        (virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (quantity)))
+        (tag_comment)
+        (tag_comment)))))
+
+==============================
+Automatic posting fields and omitted amounts
+==============================
+
+; Automatic postings share ordinary posting fields and optional amounts.
+= expenses:examples
+    ! assets:checking     $1
+    * (expenses:budget)   *0.25
+    [assets:reserved]     *1
+    [equity:reserved]     *-1
+    assets:shares         1 AAAA @ $2
+    assets:checking       $0 = $10
+    assets:assignment     = $10
+    equity:examples
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (auto_transaction
+      (match)
+      (query)
+      (autoposting
+        (status)
+        (account)
+        (auto_amount
+          (amount
+            (commodity)
+            (quantity))))
+      (autoposting
+        (status)
+        (virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (quantity))))
+      (autoposting
+        (balanced_virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (quantity))))
+      (autoposting
+        (balanced_virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (neg_quantity))))
+      (autoposting
+        (account)
+        (auto_amount
+          (amount
+            (quantity)
+            (commodity)))
+        (cost)
+        (amount
+          (commodity)
+          (quantity)))
+      (autoposting
+        (account)
+        (auto_amount
+          (amount
+            (commodity)
+            (quantity)))
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (autoposting
+        (account)
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (autoposting
+        (account)))))
+
+==============================
+Automatic multiplier amount forms
+==============================
+
+; Multiplier controls: bare/signed quantities and commodity-bearing amounts.
+= expenses:examples
+    (expenses:budget)      *1
+    (expenses:budget)      *-0.25
+    (expenses:budget)      *$0.25
+    (expenses:budget)      $1
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (auto_transaction
+      (match)
+      (query)
+      (autoposting
+        (virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (quantity))))
+      (autoposting
+        (virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (neg_quantity))))
+      (autoposting
+        (virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (commodity)
+            (quantity))))
+      (autoposting
+        (virtual_account
+          (account))
+        (auto_amount
+          (amount
+            (commodity)
+            (quantity)))))))
+
+==============================
+Compact automatic marker
+==============================
+
+; Automatic rule markers also allow zero or multiple following spaces.
+=expenses:food
+    (expenses:budget)      *1
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (auto_transaction
+      (match)
+      (query)
+      (autoposting
+        (virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (quantity)))))))
+
+==============================
+Multiple spaces after automatic marker
+==============================
+
+=   expenses:food
+    (expenses:budget)      *1
+
+---
+
+(source_file
+  (journal_item
+    (auto_transaction
+      (match)
+      (query)
+      (autoposting
+        (virtual_account
+          (account))
+        (multiply)
+        (auto_amount
+          (amount
+            (quantity)))))))
+
+==============================
+Periodic single-space comment and tab heading delimiter
+==============================
+
+~ monthly ; heading comment
+    (expenses:budget)  $1
+~ monthly		! (CODE) Payee|note
+    (expenses:budget)  $1
+
+---
+
+(source_file
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (tag_comment)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity)))))
+  (journal_item
+    (periodic_transaction
+      (tilde)
+      (period)
+      (status)
+      (code)
+      (payee)
+      (note)
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity))))))

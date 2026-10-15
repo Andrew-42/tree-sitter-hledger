@@ -58,16 +58,51 @@
             "name": "match"
           },
           {
-            "type": "SYMBOL",
-            "name": "_whitechar"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_whitespace"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
-            "type": "SYMBOL",
-            "name": "query"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "query"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "tag_comment"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "SYMBOL",
             "name": "_newline"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_continuation_comment"
+            }
           },
           {
             "type": "REPEAT",
@@ -84,82 +119,219 @@
       "value": "="
     },
     "query": {
-      "type": "PATTERN",
-      "value": "\\S+"
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "[^;\\r\\n\\s][^;\\r\\n]*",
+        "flags": "u"
+      }
     },
     "autoposting": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_whitespace"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "account"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_spacer"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_whitespace"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "status"
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_whitespace"
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_real_account"
+                },
+                "named": true,
+                "value": "account"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "virtual_account"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "balanced_virtual_account"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_spacer"
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "SYMBOL",
+                                "name": "multiply"
+                              },
+                              {
+                                "type": "BLANK"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "auto_amount"
+                          },
+                          {
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "SEQ",
+                                "members": [
+                                  {
+                                    "type": "CHOICE",
+                                    "members": [
+                                      {
+                                        "type": "SYMBOL",
+                                        "name": "_whitespace"
+                                      },
+                                      {
+                                        "type": "BLANK"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "SYMBOL",
+                                    "name": "cost"
+                                  },
+                                  {
+                                    "type": "CHOICE",
+                                    "members": [
+                                      {
+                                        "type": "SYMBOL",
+                                        "name": "_whitespace"
+                                      },
+                                      {
+                                        "type": "BLANK"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "SYMBOL",
+                                    "name": "amount"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "BLANK"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "SYMBOL",
+                                "name": "_assert_amount"
+                              },
+                              {
+                                "type": "BLANK"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "_assert_amount"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_whitespace"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "tag_comment"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_newline"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
               "type": "SYMBOL",
-              "name": "multiply"
-            },
-            {
-              "type": "BLANK"
+              "name": "_continuation_comment"
             }
-          ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "auto_amount"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "_sep_comment"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
-        }
-      ]
+          }
+        ]
+      }
     },
     "auto_amount": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "amount"
-        },
-        {
-          "type": "PREC",
-          "value": 1,
-          "content": {
-            "type": "SYMBOL",
-            "name": "neg_quantity"
-          }
-        },
-        {
-          "type": "PREC",
-          "value": 1,
-          "content": {
-            "type": "SYMBOL",
-            "name": "quantity"
-          }
-        }
-      ]
+      "type": "SYMBOL",
+      "name": "amount"
     },
     "multiply": {
       "type": "STRING",
@@ -176,8 +348,16 @@
             "name": "tilde"
           },
           {
-            "type": "SYMBOL",
-            "name": "_whitechar"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_whitespace"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "SYMBOL",
@@ -187,20 +367,151 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "SEQ",
+                "type": "CHOICE",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_spacer"
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_spacer"
+                      },
+                      {
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "CHOICE",
+                                "members": [
+                                  {
+                                    "type": "SEQ",
+                                    "members": [
+                                      {
+                                        "type": "SYMBOL",
+                                        "name": "status"
+                                      },
+                                      {
+                                        "type": "CHOICE",
+                                        "members": [
+                                          {
+                                            "type": "SEQ",
+                                            "members": [
+                                              {
+                                                "type": "SYMBOL",
+                                                "name": "_whitespace"
+                                              },
+                                              {
+                                                "type": "SYMBOL",
+                                                "name": "code"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "BLANK"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "SYMBOL",
+                                    "name": "code"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "BLANK"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "SYMBOL",
+                                "name": "_whitespace"
+                              },
+                              {
+                                "type": "BLANK"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "CHOICE",
+                                "members": [
+                                  {
+                                    "type": "SEQ",
+                                    "members": [
+                                      {
+                                        "type": "CHOICE",
+                                        "members": [
+                                          {
+                                            "type": "SYMBOL",
+                                            "name": "payee"
+                                          },
+                                          {
+                                            "type": "BLANK"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "type": "STRING",
+                                        "value": "|"
+                                      },
+                                      {
+                                        "type": "CHOICE",
+                                        "members": [
+                                          {
+                                            "type": "SYMBOL",
+                                            "name": "note"
+                                          },
+                                          {
+                                            "type": "BLANK"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "ALIAS",
+                                    "content": {
+                                      "type": "SYMBOL",
+                                      "name": "_description_note"
+                                    },
+                                    "named": true,
+                                    "value": "note"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "BLANK"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "SYMBOL",
+                                "name": "_whitespace"
+                              },
+                              {
+                                "type": "BLANK"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "type": "ALIAS",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "_periodic_note"
-                    },
-                    "named": true,
-                    "value": "note"
+                    "type": "SYMBOL",
+                    "name": "_whitechar"
                   }
                 ]
               },
@@ -214,7 +525,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "_sep_comment"
+                "name": "tag_comment"
               },
               {
                 "type": "BLANK"
@@ -247,14 +558,11 @@
       "value": "~"
     },
     "period": {
-      "type": "PATTERN",
-      "value": "[a-zA-Z0-9-]+(?: [a-zA-Z0-9-]+)*"
-    },
-    "_periodic_note": {
       "type": "TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "[^*!()|\\s]+(?: [^*!()|\\s]+)*"
+        "value": "[^;\\s]+(?: [^;\\s]+)*",
+        "flags": "u"
       }
     },
     "transaction": {
@@ -330,128 +638,133 @@
                   "name": "_whitespace"
                 },
                 {
-                  "type": "CHOICE",
+                  "type": "SEQ",
                   "members": [
                     {
                       "type": "CHOICE",
                       "members": [
                         {
-                          "type": "SEQ",
+                          "type": "CHOICE",
                           "members": [
                             {
-                              "type": "SYMBOL",
-                              "name": "status"
-                            },
-                            {
-                              "type": "CHOICE",
+                              "type": "SEQ",
                               "members": [
                                 {
-                                  "type": "SEQ",
+                                  "type": "SYMBOL",
+                                  "name": "status"
+                                },
+                                {
+                                  "type": "CHOICE",
+                                  "members": [
+                                    {
+                                      "type": "SEQ",
+                                      "members": [
+                                        {
+                                          "type": "SYMBOL",
+                                          "name": "_whitespace"
+                                        },
+                                        {
+                                          "type": "SYMBOL",
+                                          "name": "code"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "BLANK"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "SYMBOL",
+                              "name": "code"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "_whitespace"
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "SEQ",
+                              "members": [
+                                {
+                                  "type": "CHOICE",
                                   "members": [
                                     {
                                       "type": "SYMBOL",
-                                      "name": "_whitespace"
+                                      "name": "payee"
                                     },
                                     {
-                                      "type": "SYMBOL",
-                                      "name": "code"
+                                      "type": "BLANK"
                                     }
                                   ]
                                 },
                                 {
-                                  "type": "BLANK"
+                                  "type": "STRING",
+                                  "value": "|"
+                                },
+                                {
+                                  "type": "CHOICE",
+                                  "members": [
+                                    {
+                                      "type": "SYMBOL",
+                                      "name": "note"
+                                    },
+                                    {
+                                      "type": "BLANK"
+                                    }
+                                  ]
                                 }
                               ]
+                            },
+                            {
+                              "type": "ALIAS",
+                              "content": {
+                                "type": "SYMBOL",
+                                "name": "_description_note"
+                              },
+                              "named": true,
+                              "value": "note"
                             }
                           ]
                         },
                         {
-                          "type": "SYMBOL",
-                          "name": "code"
+                          "type": "BLANK"
                         }
                       ]
                     },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                },
-                {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "_whitespace"
-                    },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                },
-                {
-                  "type": "CHOICE",
-                  "members": [
                     {
                       "type": "CHOICE",
                       "members": [
                         {
-                          "type": "SEQ",
-                          "members": [
-                            {
-                              "type": "CHOICE",
-                              "members": [
-                                {
-                                  "type": "SYMBOL",
-                                  "name": "payee"
-                                },
-                                {
-                                  "type": "BLANK"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "STRING",
-                              "value": "|"
-                            },
-                            {
-                              "type": "CHOICE",
-                              "members": [
-                                {
-                                  "type": "SYMBOL",
-                                  "name": "note"
-                                },
-                                {
-                                  "type": "BLANK"
-                                }
-                              ]
-                            }
-                          ]
+                          "type": "SYMBOL",
+                          "name": "_whitespace"
                         },
                         {
-                          "type": "ALIAS",
-                          "content": {
-                            "type": "SYMBOL",
-                            "name": "_description_note"
-                          },
-                          "named": true,
-                          "value": "note"
+                          "type": "BLANK"
                         }
                       ]
-                    },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                },
-                {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "_whitespace"
-                    },
-                    {
-                      "type": "BLANK"
                     }
                   ]
                 }

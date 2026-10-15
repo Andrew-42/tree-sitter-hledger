@@ -40,11 +40,13 @@ The official [EBNF specification](https://hledger.org/SPEC-journal.html) describ
 
 ## 5. Complete recurring and automatic rules
 
-- [ ] Replace the restrictive period regex with support for documented period expressions.
-- [ ] Support periodic heading status, code, description, and comments.
-- [ ] Allow multi-term and quoted automatic-rule queries.
-- [ ] Support rule comments and applicable posting syntax.
-- [ ] Verify multiplier syntax and whitespace after `~` and `=`.
+- [x] Replace the restrictive period regex with support for documented period expressions.
+- [x] Support periodic heading status, code, description, and comments.
+- [x] Allow multi-term and quoted automatic-rule queries.
+- [x] Support rule comments and applicable posting syntax.
+- [x] Verify multiplier syntax and whitespace after `~` and `=`.
+
+Verified against the hledger 1.52 `JournalReader` and `Common` readers: markers allow zero or more spaces; a multiplier `*` directly precedes its amount. Period expressions are preserved as single-spaced text, with calendar validation left to hledger. Coverage: `test/corpus/recurring_rules.txt`.
 
 ## 6. Complete directives
 
