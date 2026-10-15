@@ -13,12 +13,12 @@ The official [EBNF specification](https://hledger.org/SPEC-journal.html) describ
 
 ## 2. Fix ordinary transactions and descriptions
 
-- [ ] Add secondary dates.
-- [ ] Allow punctuation currently excluded from descriptions and payees.
-- [ ] Support `payee|note`, including empty sides and spacing variations.
-- [ ] Correct comment boundaries: descriptions should not consume comment text.
-- [ ] Verify permitted spacing around dates, statuses, and codes.
-- [ ] Keep header tokens from accidentally spanning lines.
+- [x] Add secondary dates.
+- [x] Allow punctuation currently excluded from descriptions and payees.
+- [x] Support `payee|note`, including empty sides and spacing variations.
+- [x] Correct comment boundaries: descriptions should not consume comment text.
+- [x] Verify permitted spacing around dates, statuses, and codes.
+- [x] Keep header tokens from accidentally spanning lines.
 
 ## 3. Fix amounts
 

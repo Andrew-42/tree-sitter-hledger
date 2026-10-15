@@ -99,3 +99,9 @@ Accepted compatibility forms from the reader's dispatch and implementations: `ap
 - [ ] At step 9, test malformed/incomplete input, regenerate, run the corpus, and audit queries and Neovim integration.
 
 No grammar, scanner, generated parser, or corpus files changed in this step. The first implementation milestone remains steps 2–4.
+
+## Step 2 implementation verification
+
+Ordinary headings now support secondary dates (`secondary_date` containing `date`), punctuation, and first-pipe payee/note splitting, including empty sides. Descriptions without a pipe retain the existing `note` node. Semicolons end descriptions regardless of spacing. Codes and description tokens cannot cross CR/LF boundaries. Incomplete codes recover as description text on their own line.
+
+Spacing was checked against 1.52 `transactionp`, `statusp`, and `codep`: dates require a following whitespace character or newline; secondary dates immediately follow `=`; codes require preceding whitespace; description text may immediately follow status or code. `Transaction.hs` confirms that only the first pipe separates payee and note. Corpus coverage is in `transaction_headings.txt`, alongside the unchanged existing transaction corpus. The parser was regenerated with tree-sitter 0.25.10 and all 35 corpus cases pass. No hledger executable was available, so compatibility checks use the versioned reader source rather than executable comparisons. The original audit tables above record the pre-implementation state.

@@ -132,3 +132,32 @@ include other.journal   ; Include another journal file here.
 # but you can use . or / and omit leading zeros if you prefer.
 2024.01.01
 2024/1/1
+
+###############################################################################
+
+# 4. Step 2: ordinary transaction headings and descriptions.
+
+; Secondary date
+2024-01-02=2024-01-05 shopping
+
+; Punctuation in descriptions
+2024-01-02 Coffee! (large) * café #1
+
+; Payee and note without spaces around the pipe
+2024-01-02 Supermarket|weekly groceries
+
+; Empty payee or empty note
+2024-01-02 |weekly groceries
+2024-01-02 Supermarket|
+2024-01-02 |
+
+; Later pipes remain part of the note
+2024-01-02 Supermarket|groceries|household
+
+; Comment immediately after description
+2024-01-02 shopping;this is a comment
+
+; Description immediately after status or code
+2024-01-02 *shopping
+2024-01-02 (REF123)shopping
+2024-01-02 ! (REF123)shopping

@@ -18,8 +18,6 @@ module.exports = grammar({
   conflicts: $ => [
     [$._cost_amount],
     [$._whitespace, $._spacer],
-    [$.transaction_heading],
-    [$.note, $.payee],
     [$.auto_amount, $.amount],
   ],
 
@@ -67,7 +65,7 @@ module.exports = grammar({
       $.tilde,
       $._whitechar,
       $.period,
-      optional(seq($._spacer, $.note)),
+      optional(seq($._spacer, alias($._periodic_note, $.note))),
       optional($._sep_comment),
       $._newline,
       repeat($.posting),
@@ -77,26 +75,42 @@ module.exports = grammar({
 
     period: _ => /[a-zA-Z0-9-]+(?: [a-zA-Z0-9-]+)*/,
 
+    _periodic_note: _ => token(/[^*!()|\s]+(?: [^*!()|\s]+)*/),
+
     transaction: $ => prec.left(seq(
       $.transaction_heading,
-      optional($._sep_tag_comment),
+      optional($.tag_comment),
       $._newline,
       repeat($.posting),
     )),
 
     transaction_heading: $ => seq(
       $.date,
-      optional(seq($._whitespace, $.status)),
-      optional(seq($._whitespace, $.code)),
-      optional(seq($._whitespace, $.payee, $._whitespace, '|')),
-      optional(seq($._whitespace, $.note)),
+      optional($.secondary_date),
+      optional(seq(
+        $._whitespace,
+        optional(choice(
+          seq($.status, optional(seq($._whitespace, $.code))),
+          $.code,
+        )),
+        optional($._whitespace),
+        optional(choice(
+          seq(optional($.payee), '|', optional($.note)),
+          alias($._description_note, $.note),
+        )),
+        optional($._whitespace),
+      )),
     ),
 
-    note: _ => token(/[^*!()|\s]+(?: [^*!()|\s]+)*/),
+    secondary_date: $ => seq('=', $.date),
 
-    status: _ => choice('*', '!'),
+    _description_note: _ => token(/[^;|\r\n\s][^;|\r\n]*/),
 
-    code: _ => seq('(', /[^)]*/, ')'),
+    note: _ => token(/[^;\r\n]+/),
+
+    status: _ => token(prec(3, choice('*', '!'))),
+
+    code: _ => token(prec(2, /\([^\)\r\n]*\)/)),
 
     posting: $ => seq(
       $._whitespace,
@@ -192,7 +206,7 @@ module.exports = grammar({
       optional($._sep_comment),
     ),
 
-    payee: _ => token(/[^*!()|\s]+(?: [^*!()|\s]+)*/),
+    payee: _ => token(/[^;|\r\n\s][^;|\r\n]*/),
 
     account_directive: $ => prec.left(seq(
       'account',
