@@ -146,35 +146,52 @@ module.exports = grammar({
     // Directives
     // ==========
 
+    // Market prices are dispatched separately and do not accept !/@ prefixes.
     directive: $ => choice(
-      $.include_directive,
-      $.decimal_mark_directive,
-      $.tag_directive,
-      $.commodity_directive,
       $.price_directive,
-      $.payee_directive,
-      $.account_directive,
+      seq(
+        optional(choice('!', '@')),
+        choice(
+          $.include_directive,
+          $.decimal_mark_directive,
+          $.tag_directive,
+          $.commodity_directive,
+          $.payee_directive,
+          $.account_directive,
+          $.default_year_directive,
+          $.default_commodity_directive,
+          $.alias_directive,
+          $.end_aliases_directive,
+          $.apply_account_directive,
+          $.end_apply_account_directive,
+          $.end_apply_year_directive,
+        ),
+      ),
     ),
 
     include_directive: $ => seq(
       'include',
       $._whitespace,
       $.file_path,
-      optional($._sep_comment),
+      optional($._directive_comment),
+      $._directive_eol,
     ),
 
     decimal_mark_directive: $ => seq(
       'decimal-mark',
       $._whitespace,
       choice('.', ','),
-      optional($._sep_comment),
+      optional($._directive_comment),
+      $._directive_eol,
     ),
 
     tag_directive: $ => seq(
       'tag',
       $._whitespace,
       $.tag,
-      optional($._sep_comment),
+      optional($._directive_comment),
+      $._directive_eol,
+      repeat($.directive_content),
     ),
 
     tag: $ => $._word,
@@ -186,25 +203,31 @@ module.exports = grammar({
         $.commodity,
         $.amount
       ),
-      optional($._sep_comment),
+      optional($._directive_comment),
+      $._directive_eol,
+      repeat($.commodity_subdirective),
     )),
 
     price_directive: $ => seq(
       'P',
-      $._whitespace,
+      optional($._whitespace),
       $.date,
+      optional(seq($._whitespace, $.time)),
       $._whitespace,
       $.commodity,
       $._whitespace,
       $.amount,
-      optional($._sep_comment),
+      optional($._directive_comment),
+      $._directive_eol,
     ),
 
     payee_directive: $ => seq(
       'payee',
       $._whitespace,
-      $.payee,
-      optional($._sep_comment),
+      alias($._directive_payee, $.payee),
+      optional($._directive_comment),
+      $._directive_eol,
+      repeat($.directive_content),
     ),
 
     payee: _ => token(/[^;|\r\n\s][^;|\r\n]*/),
@@ -213,8 +236,8 @@ module.exports = grammar({
       'account',
       $._whitespace,
       $.account,
-      optional($._sep_comment),
-      $._newline,
+      optional($._directive_comment),
+      $._directive_eol,
       repeat($.account_subdirective)
     )),
 
@@ -228,45 +251,41 @@ module.exports = grammar({
         $.check_subdirective,
         $.assert_subdirective,
         $.type_subdirective,
-        $.comment
+        $.comment,
+        alias($._directive_content_text, $.directive_content),
       ),
-      $._newline
+      $._directive_eol
     ),
 
-    alias_subdirective: $ => seq(
+    alias_subdirective: $ => prec.right(seq(
       'alias',
-      $._whitespace,
-      /[^\s;]+/,
-      optional($._sep_comment)
-    ),
+      optional(seq($._whitespace, /[^;\r\n]+/u)),
+      optional($._directive_comment)
+    )),
 
-    note_subdirective: $ => seq(
+    note_subdirective: $ => prec.right(seq(
       'note',
-      $._whitespace,
-      /[^;\r\n]+/,
-      optional($._sep_comment)
-    ),
+      optional(seq($._whitespace, /[^;\r\n]+/u)),
+      optional($._directive_comment)
+    )),
 
-    check_subdirective: $ => seq(
+    check_subdirective: $ => prec.right(seq(
       'check',
-      $._whitespace,
-      /[^;\r\n]+/,
-      optional($._sep_comment)
-    ),
+      optional(seq($._whitespace, /[^;\r\n]+/u)),
+      optional($._directive_comment)
+    )),
 
-    assert_subdirective: $ => seq(
+    assert_subdirective: $ => prec.right(seq(
       'assert',
-      $._whitespace,
-      /[^;\r\n]+/,
-      optional($._sep_comment)
-    ),
+      optional(seq($._whitespace, /[^;\r\n]+/u)),
+      optional($._directive_comment)
+    )),
 
-    type_subdirective: $ => seq(
+    type_subdirective: $ => prec.right(seq(
       'type',
-      $._whitespace,
-      choice('A', 'L', 'E', 'R', 'X', 'C', 'V'),
-      optional($._sep_comment)
-    ),
+      optional(seq($._whitespace, /[^;\r\n]+/u)),
+      optional($._directive_comment)
+    )),
 
     // Utilities
     // =========
@@ -303,28 +322,83 @@ module.exports = grammar({
     _2d: _ => token(/\d{1,2}/),
     _4d: _ => token(/\d{4}/),
 
-    // File path
-    // =========
+    // Directive arguments are line-bound; include paths are not shell words.
+    file_path: _ => token(/[^;\s][^;\r\n]*/u),
 
-    file_path: $ => choice(
-      $._absolute_path,
-      $._relative_path,
+    _directive_payee: _ => token(choice(/"[^"\r\n]*"/u, /[^;\s][^;\r\n]*/u)),
+
+    _directive_eol: $ => seq(optional($._whitespace), $._newline),
+
+    _directive_comment: $ => seq(optional($._whitespace), $.comment),
+
+    _directive_content_text: _ => token(prec(-1, /[^\s][^\r\n]*/u)),
+
+    // Recognize familiar metadata keywords without restricting ignored content.
+    directive_content: $ => seq(
+      $._whitespace, $._directive_metadata, $._directive_eol,
     ),
 
-    _absolute_path: $ => seq(
-      choice('/', /[A-Za-z]:[\\\/]/), // Root or drive
-      optional($._path_segments)
+    _directive_metadata: $ => choice(
+      $.alias_subdirective,
+      $.note_subdirective,
+      $.check_subdirective,
+      $.assert_subdirective,
+      $.type_subdirective,
+      $.comment,
+      $._directive_content_text,
     ),
 
-    _relative_path: $ => seq(
-      optional(choice('./', '../')),
-      $._path_segments
+    commodity_subdirective: $ => seq(
+      $._whitespace,
+      choice(
+        $.format_subdirective,
+        $.alias_subdirective,
+        $.note_subdirective,
+        $.check_subdirective,
+        $.assert_subdirective,
+        $.type_subdirective,
+        $.comment,
+        alias($._directive_content_text, $.directive_content),
+      ),
+      $._directive_eol,
     ),
 
-    _path_segments: _ => seq(
-      /[^\s\\\/]+/,                       // First path segment
-      repeat(seq(/[\\\/]/, /[^\s\\\/]+/)) // Separator + additional segments
+    format_subdirective: $ => prec.right(seq(
+      'format', $._whitespace, $.amount, optional($._directive_comment),
+    )),
+
+    default_year_directive: $ => seq(
+      choice('Y', 'year', 'apply year'), optional($._whitespace),
+      $.year, optional($._directive_comment), $._directive_eol,
     ),
+
+    year: _ => token(/[0-9]{4,}/u),
+
+    default_commodity_directive: $ => seq(
+      'D', $._whitespace, $.amount, optional($._directive_comment), $._directive_eol,
+    ),
+
+    alias_directive: $ => seq(
+      'alias', $._whitespace, $.alias_pattern, '=',
+      optional($.alias_replacement), $._directive_eol,
+    ),
+
+    alias_pattern: _ => token(choice(
+      /\/(?:[^/\\\r\n]|\\[^\r\n])+\/[ \t]*/u,
+      /[^=\r\n]+/u,
+    )),
+    alias_replacement: _ => token(/[^\r\n]+/u),
+
+    end_aliases_directive: $ => seq('end aliases', $._directive_eol),
+
+    apply_account_directive: $ => seq(
+      'apply account', $._whitespace, $.account, $._directive_eol,
+    ),
+
+    end_apply_account_directive: $ => seq('end apply account', $._directive_eol),
+    end_apply_year_directive: $ => seq('end apply year', $._directive_eol),
+
+    time: _ => token(/[0-9]{2}:[0-9]{2}(?::[0-9]{2})?(?:[+-][0-9]{4})?/u),
 
     // COMMENTS
     // ========

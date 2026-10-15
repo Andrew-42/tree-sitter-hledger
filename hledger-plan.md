@@ -50,13 +50,15 @@ Verified against the hledger 1.52 `JournalReader` and `Common` readers: markers 
 
 ## 6. Complete directives
 
-- [ ] Add default year/commodity, aliases and their terminators, and account scopes.
-- [ ] Audit accepted alternative directive spellings and prefixes.
-- [ ] Support commodity subdirectives and other accepted indented directive content.
-- [ ] Verify account subdirectives rather than assuming the current list is complete.
-- [ ] Support include paths with spaces and documented format prefixes.
-- [ ] Add optional time information to price directives.
-- [ ] Ensure every directive respects line boundaries.
+- [x] Add default year/commodity, aliases and their terminators, and account scopes.
+- [x] Audit accepted alternative directive spellings and prefixes.
+- [x] Support commodity subdirectives and other accepted indented directive content.
+- [x] Verify account subdirectives rather than assuming the current list is complete.
+- [x] Support include paths with spaces and documented format prefixes.
+- [x] Add optional time information to price directives.
+- [x] Ensure every directive respects line boundaries.
+
+Verified against the hledger 1.52 `JournalReader` and `Common` readers. Coverage: `test/corpus/directives.txt`; default-year spellings, directive prefixes (excluding `P`), open indented metadata, include reader prefixes and spaces, price times and offsets, and line boundaries. `end apply year` is accepted without restoring a previous year, matching the reader. Accounting effects and format/calendar validation remain with hledger.
 
 ## 7. Fix comments, tags, and file boundaries
 

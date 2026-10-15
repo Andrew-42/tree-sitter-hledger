@@ -1,0 +1,579 @@
+======================================================================
+Default year spellings and yearless date
+======================================================================
+
+Y 2024
+Y2024
+year 2024
+apply year 2024
+end apply year
+01-06 Yearless date
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (default_year_directive
+        (year))))
+  (journal_item
+    (directive
+      (default_year_directive
+        (year))))
+  (journal_item
+    (directive
+      (default_year_directive
+        (year))))
+  (journal_item
+    (directive
+      (default_year_directive
+        (year))))
+  (journal_item
+    (directive
+      (end_apply_year_directive)))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note)))))
+
+======================================================================
+Default commodity formats
+======================================================================
+
+D $1,000.00
+D 1.00 EUR
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (default_commodity_directive
+        (amount
+          (commodity)
+          (quantity)))))
+  (journal_item
+    (directive
+      (default_commodity_directive
+        (amount
+          (quantity)
+          (commodity))))))
+
+======================================================================
+Basic and regex account aliases
+======================================================================
+
+alias cash = assets:cash
+alias /^expenses:food/ = expenses:groceries
+alias /^assets\/cash/ = assets:wallet
+alias obsolete =
+end aliases
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (alias_directive
+        (alias_pattern)
+        (alias_replacement))))
+  (journal_item
+    (directive
+      (alias_directive
+        (alias_pattern)
+        (alias_replacement))))
+  (journal_item
+    (directive
+      (alias_directive
+        (alias_pattern)
+        (alias_replacement))))
+  (journal_item
+    (directive
+      (alias_directive
+        (alias_pattern))))
+  (journal_item
+    (directive
+      (end_aliases_directive))))
+
+======================================================================
+Nested account scopes
+======================================================================
+
+apply account assets
+apply account savings
+2024-01-06 Scoped
+    bank  $1
+    cash  $-1
+end apply account
+end apply account
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (apply_account_directive
+        (account))))
+  (journal_item
+    (directive
+      (apply_account_directive
+        (account))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity)))))
+  (journal_item
+    (directive
+      (end_apply_account_directive)))
+  (journal_item
+    (directive
+      (end_apply_account_directive))))
+
+======================================================================
+Directive prefixes
+======================================================================
+
+!account assets:prefixed
+@account expenses:prefixed
+!D $1.00
+@year 2024
+!alias wallet = assets:wallet
+@end aliases
+!commodity USD
+@decimal-mark .
+!include journal:monthly reports/*.journal
+@payee Shop
+!tag project
+@apply account assets
+!end apply account
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (account_directive
+        (account))))
+  (journal_item
+    (directive
+      (account_directive
+        (account))))
+  (journal_item
+    (directive
+      (default_commodity_directive
+        (amount
+          (commodity)
+          (quantity)))))
+  (journal_item
+    (directive
+      (default_year_directive
+        (year))))
+  (journal_item
+    (directive
+      (alias_directive
+        (alias_pattern)
+        (alias_replacement))))
+  (journal_item
+    (directive
+      (end_aliases_directive)))
+  (journal_item
+    (directive
+      (commodity_directive
+        (commodity))))
+  (journal_item
+    (directive
+      (decimal_mark_directive)))
+  (journal_item
+    (directive
+      (include_directive
+        (file_path))))
+  (journal_item
+    (directive
+      (payee_directive
+        (payee))))
+  (journal_item
+    (directive
+      (tag_directive
+        (tag))))
+  (journal_item
+    (directive
+      (apply_account_directive
+        (account))))
+  (journal_item
+    (directive
+      (end_apply_account_directive))))
+
+======================================================================
+Commodity formats and arbitrary indented content
+======================================================================
+
+commodity USD  ; declaration
+    ; continuation
+    format 1,000.00 USD  ; format
+    note US dollars
+    custom metadata
+commodity EUR
+    format 1.000,00 EUR
+    format 1,000.00 EUR
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (commodity_directive
+        (commodity)
+        (comment)
+        (commodity_subdirective
+          (comment))
+        (commodity_subdirective
+          (format_subdirective
+            (amount
+              (quantity)
+              (commodity))
+            (comment)))
+        (commodity_subdirective
+          (note_subdirective))
+        (commodity_subdirective
+          (directive_content)))))
+  (journal_item
+    (directive
+      (commodity_directive
+        (commodity)
+        (commodity_subdirective
+          (format_subdirective
+            (amount
+              (quantity)
+              (commodity))))
+        (commodity_subdirective
+          (format_subdirective
+            (amount
+              (quantity)
+              (commodity))))))))
+
+======================================================================
+Open account subdirectives and comments
+======================================================================
+
+account expenses:examples  ; type:X
+    alias household spending  ; alias comment
+    note A note with spaces ; note comment
+    check commodity == USD  ; check comment
+    assert commodity == USD
+    type expense
+    custom metadata
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (account_directive
+        (account)
+        (comment)
+        (account_subdirective
+          (alias_subdirective
+            (comment)))
+        (account_subdirective
+          (note_subdirective
+            (comment)))
+        (account_subdirective
+          (check_subdirective
+            (comment)))
+        (account_subdirective
+          (assert_subdirective))
+        (account_subdirective
+          (type_subdirective))
+        (account_subdirective
+          (directive_content))))))
+
+======================================================================
+Payee declarations and indented content
+======================================================================
+
+payee "Example Shop"
+    alias Example.*Shop
+    custom payee metadata
+payee ""
+payee Example|Shop
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (payee_directive
+        (payee)
+        (directive_content
+          (alias_subdirective))
+        (directive_content))))
+  (journal_item
+    (directive
+      (payee_directive
+        (payee))))
+  (journal_item
+    (directive
+      (payee_directive
+        (payee)))))
+
+======================================================================
+Tag declarations and indented content
+======================================================================
+
+tag project  ; declaration
+    ; continuation
+    custom tag metadata
+tag next
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (tag_directive
+        (tag)
+        (comment)
+        (directive_content
+          (comment))
+        (directive_content))))
+  (journal_item
+    (directive
+      (tag_directive
+        (tag)))))
+
+======================================================================
+Include paths spaces globs and reader prefixes
+======================================================================
+
+include journals/household budget.journal
+include journals/monthly reports/*.journal  ; comment
+include journal:journals/household budget.journal
+include csv:imports/bank statement.csv
+include timeclock:work logs/2024.timeclock
+include timedot:work logs/2024.timedot
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (include_directive
+        (file_path))))
+  (journal_item
+    (directive
+      (include_directive
+        (file_path)
+        (comment))))
+  (journal_item
+    (directive
+      (include_directive
+        (file_path))))
+  (journal_item
+    (directive
+      (include_directive
+        (file_path))))
+  (journal_item
+    (directive
+      (include_directive
+        (file_path))))
+  (journal_item
+    (directive
+      (include_directive
+        (file_path)))))
+
+======================================================================
+Price times seconds offsets and compact marker
+======================================================================
+
+P 2024-01-06 AAPL $179
+P 2024-01-06 09:30 AAPL $179
+P 2024-01-06 09:30:45 AAPL $179
+P 2024-01-06 09:30-0800 AAPL $179
+P 2024-01-06 09:30:45+0130 AAPL $179
+P2024-01-06 AAPL $179
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (price_directive
+        (date)
+        (commodity)
+        (amount
+          (commodity)
+          (quantity)))))
+  (journal_item
+    (directive
+      (price_directive
+        (date)
+        (time)
+        (commodity)
+        (amount
+          (commodity)
+          (quantity)))))
+  (journal_item
+    (directive
+      (price_directive
+        (date)
+        (time)
+        (commodity)
+        (amount
+          (commodity)
+          (quantity)))))
+  (journal_item
+    (directive
+      (price_directive
+        (date)
+        (time)
+        (commodity)
+        (amount
+          (commodity)
+          (quantity)))))
+  (journal_item
+    (directive
+      (price_directive
+        (date)
+        (time)
+        (commodity)
+        (amount
+          (commodity)
+          (quantity)))))
+  (journal_item
+    (directive
+      (price_directive
+        (date)
+        (commodity)
+        (amount
+          (commodity)
+          (quantity))))))
+
+======================================================================
+Adjacent directive line boundaries
+======================================================================
+
+decimal-mark .
+commodity GBP
+payee Boundary Shop
+tag boundary
+include boundary.journal
+P 2024-01-06 GBP $1.25
+2024-01-06 Sentinel
+    assets:checking  $1
+    equity:examples  $-1
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (decimal_mark_directive)))
+  (journal_item
+    (directive
+      (commodity_directive
+        (commodity))))
+  (journal_item
+    (directive
+      (payee_directive
+        (payee))))
+  (journal_item
+    (directive
+      (tag_directive
+        (tag))))
+  (journal_item
+    (directive
+      (include_directive
+        (file_path))))
+  (journal_item
+    (directive
+      (price_directive
+        (date)
+        (commodity)
+        (amount
+          (commodity)
+          (quantity)))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity))))))
+
+======================================================================
+Bare account metadata and directive trailing whitespace
+======================================================================
+
+account assets:metadata 
+    alias
+    note
+    check
+    assert
+    type
+decimal-mark . 
+D $1.00 
+Y 2024 
+end aliases 
+P 2024-01-06 USD $1.00 
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (account_directive
+        (account)
+        (account_subdirective
+          (alias_subdirective))
+        (account_subdirective
+          (note_subdirective))
+        (account_subdirective
+          (check_subdirective))
+        (account_subdirective
+          (assert_subdirective))
+        (account_subdirective
+          (type_subdirective)))))
+  (journal_item
+    (directive
+      (decimal_mark_directive)))
+  (journal_item
+    (directive
+      (default_commodity_directive
+        (amount
+          (commodity)
+          (quantity)))))
+  (journal_item
+    (directive
+      (default_year_directive
+        (year))))
+  (journal_item
+    (directive
+      (end_aliases_directive)))
+  (journal_item
+    (directive
+      (price_directive
+        (date)
+        (commodity)
+        (amount
+          (commodity)
+          (quantity))))))

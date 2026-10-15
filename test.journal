@@ -380,3 +380,99 @@ include other.journal   ; Include another journal file here.
 
 =   expenses:food
     (expenses:budget)      *1
+
+###############################################################################
+
+# 8. Step 6: directives (failing and regression examples).
+# These exercise syntax only; include targets need not exist for tree-sitter.
+# Indented content must belong to its directive, and fields must stay on one line.
+
+; Default year spellings, including the compact single-letter form.
+Y 2024
+Y2024
+year 2024
+apply year 2024
+01-06 Yearless date after a default year
+
+; A default commodity format includes a decimal mark.
+D $1,000.00
+
+; Basic and regular-expression aliases, followed by their terminator.
+alias cash = assets:cash
+alias /^expenses:food/ = expenses:groceries
+end aliases
+
+; Account scopes can nest; each terminator closes the preceding scope.
+apply account assets
+apply account savings
+2024-01-06 Scoped account names
+    bank                  $1
+    cash                  $-1
+end apply account
+end apply account
+
+; Optional directive prefixes directly precede the keyword.
+!account assets:prefixed
+@account expenses:prefixed
+!D $1.00
+@year 2024
+!alias wallet = assets:wallet
+@end aliases
+
+; Commodity format subdirectives and other accepted indented content.
+commodity USD  ; declaration comment
+    ; continuation comment
+    format 1,000.00 USD  ; display format
+    note US dollars
+    custom metadata accepted by the reader
+commodity EUR
+    format 1.000,00 EUR
+    format 1,000.00 EUR
+
+; Account subdirectives are not a closed, validated list in hledger.
+account expenses:directive examples  ; type:X
+    alias household spending
+    note A note with spaces
+    check commodity == USD
+    assert commodity == USD
+    type expense
+    custom metadata accepted by the reader
+
+; Payee declarations accept quoted names, including the empty name.
+payee "Example Shop"
+    alias Example.*Shop
+    custom payee metadata
+payee ""
+payee Example|Shop
+
+; Tags also accept continuation comments and arbitrary indented content.
+tag project  ; declaration comment
+    ; continuation comment
+    custom tag metadata
+
+; Include paths may contain spaces and globs, with optional reader prefixes.
+include journals/household budget.journal
+include journals/monthly reports/*.journal  ; path ends before the semicolon
+include journal:journals/household budget.journal
+include csv:imports/bank statement.csv
+include timeclock:work logs/2024.timeclock
+include timedot:work logs/2024.timedot
+
+; Prices accept optional times, seconds, and timezone offsets.
+P 2024-01-06 AAPL $179
+P 2024-01-06 09:30 AAPL $179
+P 2024-01-06 09:30:45 AAPL $179
+P 2024-01-06 09:30-0800 AAPL $179
+P 2024-01-06 09:30:45+0130 AAPL $179
+P2024-01-06 AAPL $179
+
+; Adjacent directives and a transaction must remain separate journal items.
+decimal-mark .
+commodity GBP
+payee Boundary Shop
+tag boundary
+include boundary.journal
+P 2024-01-06 GBP $1.25
+2024-01-06 Directive boundary sentinel
+    assets:checking       $1
+    equity:examples       $-1
