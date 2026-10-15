@@ -30,13 +30,13 @@ The official [EBNF specification](https://hledger.org/SPEC-journal.html) describ
 
 ## 4. Fix postings, costs, and balances
 
-- [ ] Parse posting status separately from account names.
-- [ ] Allow balance assignments without an explicit posting amount.
-- [ ] Correct account tokenization and two-space/tab delimiters.
-- [ ] Represent real, virtual, and balanced virtual postings distinctly; currently wrappers are just account text.
-- [ ] Verify whitespace around costs and assertions, including compact forms.
-- [ ] Preserve the existing assertion operators and assertion costs.
-- [ ] Associate continuation comments with the appropriate transaction or posting.
+- [x] Parse posting status separately from account names.
+- [x] Allow balance assignments without an explicit posting amount.
+- [x] Correct account tokenization and two-space/tab delimiters.
+- [x] Represent real, virtual, and balanced virtual postings distinctly; currently wrappers are just account text.
+- [x] Verify whitespace around costs and assertions, including compact forms.
+- [x] Preserve the existing assertion operators and assertion costs.
+- [x] Associate continuation comments with the appropriate transaction or posting.
 
 ## 5. Complete recurring and automatic rules
 

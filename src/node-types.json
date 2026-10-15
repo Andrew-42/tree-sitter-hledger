@@ -188,6 +188,21 @@
     }
   },
   {
+    "type": "balanced_virtual_account",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "account",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "block_comment",
     "named": true,
     "fields": {}
@@ -432,6 +447,10 @@
           "named": true
         },
         {
+          "type": "tag_comment",
+          "named": true
+        },
+        {
           "type": "tilde",
           "named": true
         }
@@ -459,11 +478,23 @@
           "named": true
         },
         {
+          "type": "balanced_virtual_account",
+          "named": true
+        },
+        {
           "type": "cost",
           "named": true
         },
         {
+          "type": "status",
+          "named": true
+        },
+        {
           "type": "tag_comment",
+          "named": true
+        },
+        {
+          "type": "virtual_account",
           "named": true
         }
       ]
@@ -664,6 +695,21 @@
     }
   },
   {
+    "type": "virtual_account",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "account",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "\t",
     "named": false
   },
@@ -673,6 +719,14 @@
   },
   {
     "type": "#",
+    "named": false
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": ")",
     "named": false
   },
   {
@@ -737,6 +791,14 @@
   },
   {
     "type": "X",
+    "named": false
+  },
+  {
+    "type": "[",
+    "named": false
+  },
+  {
+    "type": "]",
     "named": false
   },
   {

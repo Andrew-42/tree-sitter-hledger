@@ -9,20 +9,21 @@ Periodic transaction
 ---
 
 (source_file
-    (journal_item
+  (journal_item
     (periodic_transaction
-        (tilde)
-        (period)
-        (note)
-        (comment)
-        (posting
-        (account)
+      (tilde)
+      (period)
+      (note)
+      (comment)
+      (posting
+        (virtual_account
+          (account))
         (amount
-            (commodity)
-            (quantity)))
-        (posting
-        (account)
+          (commodity)
+          (quantity)))
+      (posting
+        (virtual_account
+          (account))
         (amount
-            (commodity)
-            (quantity))))))
-
+          (commodity)
+          (quantity))))))

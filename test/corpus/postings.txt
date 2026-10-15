@@ -1,0 +1,483 @@
+======================
+Posting statuses
+======================
+
+; Posting status is independent of the transaction status and account name.
+2024-01-04 Posting statuses
+    * assets:checking     $1
+    ! expenses:examples   $-1
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (status)
+        (account)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (status)
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity))))))
+
+======================
+Balance assignments
+======================
+
+; Balance assignments do not require an explicit posting amount.
+2024-01-04 Balance assignments
+    assets:assignment     = $10
+    assets:assignment     == $10
+    assets:assignment     =* $10
+    assets:assignment     ==* $10
+    equity:examples
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)))))
+
+======================
+Account boundaries
+======================
+
+; Single spaces belong to account names; two spaces delimit the amount.
+; A semicolon inside a later account word is part of the account name.
+2024-01-04 Account boundaries
+    expenses:office supplies  $1
+    expenses:office ;supplies  $1
+    equity:examples           $-2
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (top_comment))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity))))))
+
+======================
+Tabs in account boundaries
+======================
+
+; The first separator below is two literal tabs; the second is a single tab
+; inside the account name, followed by the usual two-space amount delimiter.
+2024-01-04 Tabs in account boundaries
+    assets:checking		$1
+    expenses:office	supplies  $-1
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (top_comment))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity))))))
+
+======================
+Posting types
+======================
+
+; Wrappers identify virtual and balanced virtual postings, not account text.
+2024-01-04 Posting types
+    assets:checking        $1
+    equity:examples        $-1
+    (expenses:budget)      $5
+    [assets:reserved]      $2
+    [equity:reserved]      $-2
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity)))
+      (posting
+        (virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (balanced_virtual_account
+          (account))
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (balanced_virtual_account
+          (account))
+        (amount
+          (commodity)
+          (neg_quantity))))))
+
+======================
+Compact costs and assertions
+======================
+
+; Costs and assertions also accept compact field boundaries.
+2024-01-04 Compact costs and assertions
+    assets:shares          1 AAAA@$2
+    assets:shares          1 AAAA@@$2
+    assets:checking        $0=$10
+    assets:checking        $0==$10
+    assets:checking        $0=*$10
+    assets:checking        $0==*$10
+    equity:examples
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity))
+        (cost)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity))
+        (cost)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)))))
+
+======================
+Assertion regression controls
+======================
+
+; Preserve spaced operators and unit/total costs on assertion amounts.
+2024-01-04 Assertion regression controls
+    assets:checking        $0 = $10
+    assets:checking        $0 == $10
+    assets:checking        $0 =* $10
+    assets:checking        $0 ==* $10
+    assets:shares          0 AAAA = 2 AAAA @ $2
+    assets:shares          0 AAAA = 2 AAAA @@ $4
+
+---
+
+(source_file
+  (journal_item
+    (top_comment))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (assert)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity))
+        (assert)
+        (amount
+          (quantity)
+          (commodity))
+        (cost)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity))
+        (assert)
+        (amount
+          (quantity)
+          (commodity))
+        (cost)
+        (amount
+          (commodity)
+          (quantity))))))
+
+======================
+Continuation comment ownership  ; heading comment
+======================
+
+2024-01-04 Continuation comment ownership  ; heading comment
+    ; This continuation belongs to the transaction heading.
+    ; This one also belongs to the heading.
+    assets:checking        $1  ; first posting comment
+    ; This continuation belongs to assets:checking.
+    ; This one also belongs to assets:checking.
+    equity:examples        $-1
+    ; This continuation belongs to equity:examples.
+
+
+---
+
+(source_file
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment)
+      (tag_comment)
+      (tag_comment)
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (tag_comment)
+        (tag_comment
+          (tag_value
+            (tag)
+            (value)))
+        (tag_comment
+          (tag_value
+            (tag)
+            (value))))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity))
+        (tag_comment
+          (tag_value
+            (tag)
+            (value)))))))
+
+======================
+Combined posting fields and whitespace
+======================
+
+2024-01-04
+    *(expenses:budget)  =$10@$2
+    ![assets:reserved]  0==*2 AAAA@@$4
+    expenses:office	$1
+    expenses:mixed 	$1   
+    assets:empty   
+    ; postingtag:value
+    ;
+    equity:examples
+
+---
+
+(source_file
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date))
+      (posting
+        (status)
+        (virtual_account
+          (account))
+        (assert)
+        (amount
+          (commodity)
+          (quantity))
+        (cost)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (status)
+        (balanced_virtual_account
+          (account))
+        (amount
+          (quantity))
+        (assert)
+        (amount
+          (quantity)
+          (commodity))
+        (cost)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity)))
+      (posting
+        (account)
+        (tag_comment
+          (tag_value
+            (tag)
+            (value)))
+        (tag_comment))
+      (posting
+        (account)))))

@@ -22,16 +22,15 @@ Tag with single-word value before comma
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (posting
-                (tag_comment
-                    (tag_value
-                        (tag)
-                        (value)))))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment
+        (tag_value
+          (tag)
+          (value))))))
 
 =========================================
 Tag with without value
@@ -43,15 +42,14 @@ Tag with without value
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (posting
-                (tag_comment
-                    (tag_value
-                        (tag)))))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment
+        (tag_value
+          (tag))))))
 
 =========================================
 Tag with value at end of line
@@ -63,16 +61,15 @@ Tag with value at end of line
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (posting
-                (tag_comment
-                    (tag_value
-                        (tag)
-                        (value)))))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment
+        (tag_value
+          (tag)
+          (value))))))
 
 =========================================
 Multiple comma-separated tags
@@ -84,19 +81,18 @@ Multiple comma-separated tags
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (posting
-                (tag_comment
-                    (tag_value
-                        (tag)
-                        (value))
-                    (tag_value
-                        (tag)
-                        (value)))))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment
+        (tag_value
+          (tag)
+          (value))
+        (tag_value
+          (tag)
+          (value))))))
 
 =========================================
 Tag with no value followed by comma
@@ -108,15 +104,14 @@ Tag with no value followed by comma
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (posting
-                (tag_comment
-                    (tag_value
-                        (tag)))))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment
+        (tag_value
+          (tag))))))
 
 =========================================
 Real-world tag with space after colon
@@ -129,15 +124,12 @@ Real-world tag with space after colon
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (posting
-                (tag_comment
-                    (tag_value
-                        (tag))))
-            (posting
-                (tag_comment)))))
-
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment
+        (tag_value
+          (tag)))
+      (tag_comment))))

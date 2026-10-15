@@ -79,6 +79,7 @@ module.exports = grammar({
       optional(seq($._spacer, alias($._periodic_note, $.note))),
       optional($._sep_comment),
       $._newline,
+      repeat($._continuation_comment),
       repeat($.posting),
     )),
 
@@ -92,6 +93,7 @@ module.exports = grammar({
       $.transaction_heading,
       optional($.tag_comment),
       $._newline,
+      repeat($._continuation_comment),
       repeat($.posting),
     )),
 
@@ -123,30 +125,56 @@ module.exports = grammar({
 
     code: _ => token(prec(2, /\([^\)\r\n]*\)/)),
 
-    posting: $ => seq(
+    posting: $ => prec.right(seq(
       $._whitespace,
+      optional(seq($.status, optional($._whitespace))),
       choice(
-        $.tag_comment,
-        seq(
-          $.account,
-          optional(
-            seq(
-              $._spacer,
-              $._cost_amount,
-              optional($._assert_amount)
-            )
-          ),
-          optional($._sep_tag_comment),
-        )
+        alias($._real_account, $.account),
+        $.virtual_account,
+        $.balanced_virtual_account,
       ),
+      optional(seq(
+        $._spacer,
+        choice(
+          seq($._cost_amount, optional($._assert_amount)),
+          $._assert_amount,
+        ),
+      )),
+      optional($._whitespace),
+      optional($.tag_comment),
       $._newline,
+      repeat($._continuation_comment),
+    )),
+
+    // A single space or tab belongs to the name; repeated whitespace ends it.
+    _real_account: _ => token(/[^;*!(\[\s][^\s]*(?:[^\S\r\n][^\s]+)*/u),
+
+    virtual_account: $ => seq(
+      '(', alias($._virtual_account_name, $.account), ')',
     ),
 
-    _assert_amount: $ => seq($._whitespace, $.assert, $._whitespace, $._cost_amount),
+    balanced_virtual_account: $ => seq(
+      '[', alias($._balanced_account_name, $.account), ']',
+    ),
 
-    _cost_amount: $ => choice(
-      seq($.amount, $._whitespace, $.cost, $._whitespace, $.amount),
+    _virtual_account_name: _ => token(/[^\s)]+(?:[^\S\r\n][^\s)]+)*/u),
+    _balanced_account_name: _ => token(/[^\s\]]+(?:[^\S\r\n][^\s\]]+)*/u),
+
+    _continuation_comment: $ => seq(
+      alias($._indented_tag_comment, $.tag_comment), $._newline,
+    ),
+
+    // Include the semicolon in this token so indentation alone cannot consume
+    // the start of the next posting while looking for a continuation comment.
+    _indented_tag_comment: $ => seq(token(/[ \t]+;/), optional($._tag_comment_contents)),
+
+    _assert_amount: $ => seq(
+      optional($._whitespace), $.assert, optional($._whitespace), $._cost_amount,
+    ),
+
+    _cost_amount: $ => seq(
       $.amount,
+      optional(seq(optional($._whitespace), $.cost, optional($._whitespace), $.amount)),
     ),
 
     cost: _ => token(choice('@@', '@')),
@@ -350,13 +378,15 @@ module.exports = grammar({
 
     tag_comment: $ => seq(
       ';',
-      repeat(choice(
-        $._word,
-        $.tag_value,
-        ';',
-        $._whitespace,
-      ))
+      optional($._tag_comment_contents),
     ),
+
+    _tag_comment_contents: $ => repeat1(choice(
+      $._word,
+      $.tag_value,
+      ';',
+      $._whitespace,
+    )),
 
     _word: _ => token(/[^\s;:]+/),
 

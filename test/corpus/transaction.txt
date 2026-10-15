@@ -7,12 +7,12 @@ Incomplete transaction
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (tag_comment))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment))))
 
 =======================
 Simple transaction test
@@ -25,18 +25,18 @@ Simple transaction test
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (posting
-                (account)
-                (amount
-                    (quantity)
-                    (commodity)))
-            (posting
-                (account)))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity)))
+      (posting
+        (account)))))
 
 ================
 Transaction test
@@ -50,21 +50,20 @@ Transaction test
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (tag_comment)
-            (posting
-                (tag_comment))
-            (posting
-                (account)
-                (amount
-                    (quantity)
-                    (commodity)))
-            (posting
-                (account)))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment)
+      (tag_comment)
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity)))
+      (posting
+        (account)))))
 
 ==================================
 Transaction test - posting comment
@@ -78,21 +77,20 @@ Transaction test - posting comment
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (posting
-                (tag_comment))
-            (posting
-                (account)
-                (amount
-                    (quantity)
-                    (commodity))
-                (tag_comment))
-            (posting
-                (account)))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment)
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity))
+        (tag_comment))
+      (posting
+        (account)))))
 
 ================================
 Transaction test - more postings
@@ -106,26 +104,26 @@ Transaction test - more postings
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (posting
-                (account)
-                (amount
-                    (quantity)
-                    (commodity)))
-            (posting
-                (account)
-                (amount
-                    (quantity)
-                    (commodity)))
-            (posting
-                (account)
-                (amount
-                    (neg_quantity)
-                    (commodity))))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity)))
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity)))
+      (posting
+        (account)
+        (amount
+          (neg_quantity)
+          (commodity))))))
 
 ==========================
 Transaction test - heading
@@ -142,34 +140,29 @@ Transaction test - heading
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (status)
-                (code)
-                (note))
-            (posting
-                (tag_comment))
-            (posting
-                (tag_comment))
-            (posting
-                (tag_comment))
-            (posting
-                (tag_comment))
-            (posting
-                (account)
-                (amount
-                    (commodity)
-                    (neg_quantity))
-                    (tag_comment))
-            (posting
-                (account)
-                (amount
-                    (commodity)
-                    (quantity))
-                    (tag_comment)))))
-
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (status)
+        (code)
+        (note))
+      (tag_comment)
+      (tag_comment)
+      (tag_comment)
+      (tag_comment)
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity))
+        (tag_comment))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (tag_comment)))))
 
 =======================
 Transaction test - cost
@@ -184,39 +177,38 @@ Transaction test - cost
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (tag_comment)
-            (posting
-                (account)
-                (amount
-                    (quantity)
-                    (commodity))
-                (cost)
-                (amount
-                    (commodity)
-                    (quantity))
-                (tag_comment))
-            (posting
-                (account)
-                (amount
-                    (quantity)
-                    (commodity))
-                (cost)
-                (amount
-                    (commodity)
-                    (quantity))
-                (tag_comment))
-            (posting
-                (tag_comment))
-            (posting
-                (account)
-                (amount
-                    (commodity)
-                    (neg_quantity))))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment)
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity))
+        (cost)
+        (amount
+          (commodity)
+          (quantity))
+        (tag_comment))
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity))
+        (cost)
+        (amount
+          (commodity)
+          (quantity))
+        (tag_comment)
+        (tag_comment))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity))))))
 
 =========================
 Transaction test - assert
@@ -228,20 +220,20 @@ Transaction test - assert
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (posting
-                (account)
-                (amount
-                    (commodity)
-                    (quantity))
-                (assert)
-                (amount
-                    (commodity)
-                    (quantity))))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (assert)
+        (amount
+          (commodity)
+          (quantity))))))
 
 =========================
 Transaction test - assert
@@ -263,97 +255,94 @@ Transaction test - assert
 ---
 
 (source_file
-    (journal_item
+  (journal_item
     (transaction
-        (transaction_heading
-            (date)
-            (note))
-        (posting
-            (tag_comment))
-        (posting
-            (tag_comment))
-        (posting
-            (tag_comment))
-        (posting
-            (account)
-        (amount
-            (commodity)
-            (quantity))
-        (assert)
-        (amount
-            (commodity)
-            (quantity)))
-        (posting
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment)
+      (tag_comment)
+      (tag_comment)
+      (posting
         (account)
         (amount
-            (commodity)
-            (quantity))
+          (commodity)
+          (quantity))
         (assert)
         (amount
-            (commodity)
-            (quantity)))
-        (posting
+          (commodity)
+          (quantity)))
+      (posting
         (account)
         (amount
-            (quantity)
-            (commodity))
+          (commodity)
+          (quantity))
         (assert)
         (amount
-            (neg_quantity)
-            (commodity)))
-        (posting
+          (commodity)
+          (quantity)))
+      (posting
         (account)
         (amount
-            (quantity)
-            (commodity))
+          (quantity)
+          (commodity))
         (assert)
         (amount
-            (quantity)
-            (commodity)))
-        (posting
+          (neg_quantity)
+          (commodity)))
+      (posting
         (account)
         (amount
-            (quantity)
-            (commodity))
+          (quantity)
+          (commodity))
         (assert)
         (amount
-            (quantity)
-            (commodity)))
-        (posting
+          (quantity)
+          (commodity)))
+      (posting
         (account)
         (amount
-            (quantity)
-            (commodity))
+          (quantity)
+          (commodity))
         (assert)
         (amount
-            (quantity)
-            (commodity))
+          (quantity)
+          (commodity)))
+      (posting
+        (account)
+        (amount
+          (quantity)
+          (commodity))
+        (assert)
+        (amount
+          (quantity)
+          (commodity))
         (cost)
         (amount
-            (commodity)
-            (quantity)))
-        (posting
+          (commodity)
+          (quantity)))
+      (posting
         (account)
         (amount
-            (quantity)
-            (commodity))
+          (quantity)
+          (commodity))
         (assert)
         (amount
-            (quantity)
-            (commodity))
+          (quantity)
+          (commodity))
         (cost)
         (amount
-            (commodity)
-            (quantity)))
-        (posting
+          (commodity)
+          (quantity)))
+      (posting
         (account)
         (amount
-            (commodity)
-            (quantity))
+          (commodity)
+          (quantity))
         (assert)
         (amount
-            (commodity)
-            (neg_quantity))))))
+          (commodity)
+          (neg_quantity))))))
 
 ==============================
 Transaction test - tag comment
@@ -366,23 +355,22 @@ Transaction test - tag comment
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (tag_comment
-                (tag_value
-                    (tag)))
-            (posting
-                (tag_comment
-                    (tag_value
-                        (tag))))
-            (posting
-                (account)
-                (amount
-                    (commodity)
-                    (neg_quantity))))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment
+        (tag_value
+          (tag)))
+      (tag_comment
+        (tag_value
+          (tag)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity))))))
 
 ====================================
 Transaction test - tag value comment
@@ -395,21 +383,20 @@ Transaction test - tag value comment
 ---
 
 (source_file
-    (journal_item
-        (transaction
-            (transaction_heading
-                (date)
-                (note))
-            (tag_comment
-                (tag_value
-                    (tag)))
-            (posting
-                (tag_comment
-                    (tag_value
-                        (tag)
-                        (value))))
-            (posting
-                (account)
-                (amount
-                    (commodity)
-                    (neg_quantity))))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (tag_comment
+        (tag_value
+          (tag)))
+      (tag_comment
+        (tag_value
+          (tag)
+          (value)))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity))))))

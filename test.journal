@@ -227,3 +227,156 @@ include other.journal   ; Include another journal file here.
     assets:examples        1 000.50 USD  ; quantity ends before this comment
     assets:examples        123.45  ; no commodity on this line
     equity:examples
+
+###############################################################################
+
+# 6. Step 4: postings, costs, and balances (failing and regression examples).
+# Some failures are structural: status/wrappers must not be account text,
+# and continuation comments must belong to the heading or preceding posting.
+
+; Posting status is independent of the transaction status and account name.
+2024-01-04 Posting statuses
+    * assets:checking     $1
+    ! expenses:examples   $-1
+
+; Balance assignments do not require an explicit posting amount.
+2024-01-04 Balance assignments
+    assets:assignment     = $10
+    assets:assignment     == $10
+    assets:assignment     =* $10
+    assets:assignment     ==* $10
+    equity:examples
+
+; Single spaces belong to account names; two spaces delimit the amount.
+; A semicolon inside a later account word is part of the account name.
+2024-01-04 Account boundaries
+    expenses:office supplies  $1
+    expenses:office ;supplies  $1
+    equity:examples           $-2
+
+; The first separator below is two literal tabs; the second is a single tab
+; inside the account name, followed by the usual two-space amount delimiter.
+2024-01-04 Tabs in account boundaries
+    assets:checking		$1
+    expenses:office	supplies  $-1
+
+; Wrappers identify virtual and balanced virtual postings, not account text.
+2024-01-04 Posting types
+    assets:checking        $1
+    equity:examples        $-1
+    (expenses:budget)      $5
+    [assets:reserved]      $2
+    [equity:reserved]      $-2
+
+; Costs and assertions also accept compact field boundaries.
+2024-01-04 Compact costs and assertions
+    assets:shares          1 AAAA@$2
+    assets:shares          1 AAAA@@$2
+    assets:checking        $0=$10
+    assets:checking        $0==$10
+    assets:checking        $0=*$10
+    assets:checking        $0==*$10
+    equity:examples
+
+; Preserve spaced operators and unit/total costs on assertion amounts.
+2024-01-04 Assertion regression controls
+    assets:checking        $0 = $10
+    assets:checking        $0 == $10
+    assets:checking        $0 =* $10
+    assets:checking        $0 ==* $10
+    assets:shares          0 AAAA = 2 AAAA @ $2
+    assets:shares          0 AAAA = 2 AAAA @@ $4
+
+2024-01-04 Continuation comment ownership  ; heading comment
+    ; This continuation belongs to the transaction heading.
+    ; This one also belongs to the heading.
+    assets:checking        $1  ; first posting comment
+    ; This continuation belongs to assets:checking.
+    ; This one also belongs to assets:checking.
+    equity:examples        $-1
+    ; This continuation belongs to equity:examples.
+
+###############################################################################
+
+# 7. Step 5: recurring and automatic rules (failing and regression examples).
+# Some failures are structural: heading fields, query terms, posting wrappers,
+# and continuation comments should retain their meaning inside rules.
+
+; Period expressions with slash/dot dates and comma-separated weekdays.
+~ monthly from 2024/01/01 to 2025/01/01  Slash date range
+    (expenses:budget)      $100
+
+~ monthly from 2024.01.01 to 2025.01.01  Dot date range
+    (expenses:budget)      $100
+
+~ every mon,wed,fri  Weekday schedule
+    (expenses:budget)      $10
+
+~ every 11/05  Annual reminder
+    (expenses:budget)      $10
+
+; Regression controls for word-based intervals and relative periods.
+~ every 2 weeks  Fortnightly budget
+    (expenses:budget)      $100
+
+~ quarterly in 2024  Quarterly budget
+    (expenses:budget)      $100
+
+; Two spaces separate the period from status, code, and description.
+~ monthly  ! (BUDGET) Landlord|rent! (monthly)  ; heading comment
+    ; This continuation belongs to the periodic heading.
+    ! (expenses:rent)      $1000  ; posting comment
+    ; This continuation belongs to the virtual posting.
+
+~ monthly  * (SAVE) Savings transfer
+    [assets:reserved]      $100
+    [equity:reserved]      $-100
+
+; A description is optional, including when a heading has a comment.
+~ monthly  ; heading comment without a description
+    (expenses:budget)      $100
+
+; Whitespace after the rule marker is optional or can be multiple spaces.
+~monthly  Compact marker
+    (expenses:budget)      $100
+
+~   monthly  Spaced marker
+    (expenses:budget)      $100
+
+; Multiple query terms, including quotes containing spaces.
+= expenses:food not:desc:refund
+    (expenses:budget)      *1
+
+= acct:expenses desc:"weekly groceries" not:tag:skip
+    (expenses:budget)      *1
+
+; Rule comments and posting continuation comments have separate owners.
+= expenses:food  ; automatic rule comment
+    ; This continuation belongs to the automatic rule heading.
+    (expenses:budget)      *1  ; posting comment
+    ; This continuation belongs to the virtual posting.
+
+; Automatic postings share ordinary posting fields and optional amounts.
+= expenses:examples
+    ! assets:checking     $1
+    * (expenses:budget)   *0.25
+    [assets:reserved]     *1
+    [equity:reserved]     *-1
+    assets:shares         1 AAAA @ $2
+    assets:checking       $0 = $10
+    assets:assignment     = $10
+    equity:examples
+
+; Multiplier controls: bare/signed quantities and commodity-bearing amounts.
+= expenses:examples
+    (expenses:budget)      *1
+    (expenses:budget)      *-0.25
+    (expenses:budget)      *$0.25
+    (expenses:budget)      $1
+
+; Automatic rule markers also allow zero or multiple following spaces.
+=expenses:food
+    (expenses:budget)      *1
+
+=   expenses:food
+    (expenses:budget)      *1
