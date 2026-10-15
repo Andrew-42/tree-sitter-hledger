@@ -5,10 +5,11 @@
 This repo was inspired by [ledger-grammar] but tweaked in a way to work better
 with hledger.
 
+To build the parser run: `tree-sitter generate`
+To test the parser run: `tree-sitter test`
+
 ## Currently unsupported
 
-- **tags** in comments
-  - tag values need space to be properly detected
 - some special syntax that is supported mainly for backward compatibility or
   ledger interoperability
 

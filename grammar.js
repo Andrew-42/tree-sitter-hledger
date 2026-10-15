@@ -10,6 +10,11 @@
 module.exports = grammar({
   name: 'hledger',
 
+  externals: $ => [
+    $.value,
+    $._error_sentinel,
+  ],
+
   conflicts: $ => [
     [$._cost_amount],
     [$._whitespace, $._spacer],
@@ -323,9 +328,7 @@ module.exports = grammar({
 
     _word: _ => token(/[^\s;:]+/),
 
-    tag_value: $ => prec.right(seq($.tag, ':', optional(seq($.value, ',')))),
-    // BUG: works only if tag value has space
-    value: _ => token(/[^,\r\n]*/),
+    tag_value: $ => prec.right(seq($.tag, ':', optional($.value))),
 
     block_comment: _ => seq(
       'comment',
