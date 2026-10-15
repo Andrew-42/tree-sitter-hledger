@@ -22,11 +22,11 @@ The official [EBNF specification](https://hledger.org/SPEC-journal.html) describ
 
 ## 3. Fix amounts
 
-- [ ] Support commodityless amounts.
-- [ ] Support signs before commodities, such as `-$1`, and permitted sign spacing.
-- [ ] Add scientific notation, leading/trailing decimal marks, and supported Unicode grouping spaces.
-- [ ] Verify commodity characters and quoting against the reader.
-- [ ] Ensure quantity tokens stop at field boundaries rather than absorbing adjacent fields.
+- [x] Support commodityless amounts.
+- [x] Support signs before commodities, such as `-$1`, and permitted sign spacing.
+- [x] Add scientific notation, leading/trailing decimal marks, and supported Unicode grouping spaces.
+- [x] Verify commodity characters and quoting against the reader.
+- [x] Ensure quantity tokens stop at field boundaries rather than absorbing adjacent fields.
 
 ## 4. Fix postings, costs, and balances
 

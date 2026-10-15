@@ -161,3 +161,69 @@ include other.journal   ; Include another journal file here.
 2024-01-02 *shopping
 2024-01-02 (REF123)shopping
 2024-01-02 ! (REF123)shopping
+
+###############################################################################
+
+# 5. Step 3: amounts (regression examples).
+
+; Commodityless amounts, including zero and explicit signs
+2024-01-03 Commodityless amounts
+    expenses:examples      123.45
+    expenses:examples      -123.45
+    expenses:examples      +123.45
+    expenses:examples      0
+    equity:examples
+
+; Signs before commodities and spaces after signs
+2024-01-03 Sign placement and spacing
+    expenses:examples      -$1
+    expenses:examples      +$1
+    expenses:examples      - $1
+    expenses:examples      + $1
+    expenses:examples      $- 1
+    expenses:examples      $+ 1
+    expenses:examples      - 1 USD
+    expenses:examples      + 1 USD
+    equity:examples
+
+; Scientific notation, including uppercase E and signed exponents
+2024-01-03 Scientific notation
+    expenses:examples      $1e3
+    expenses:examples      $1E3
+    expenses:examples      1.25e-3 USD
+    expenses:examples      1e+3 USD
+    equity:examples
+
+; Leading and trailing decimal marks (the file declares decimal-mark .)
+2024-01-03 Leading and trailing decimal points
+    expenses:examples      $.5
+    expenses:examples      $-.5
+    expenses:examples      $1.
+    equity:examples
+
+; Each separator below is a literal Unicode character, not an ordinary space.
+2024-01-03 Unicode digit grouping spaces
+    expenses:examples      $1 000.50  ; U+00A0 no-break space
+    expenses:examples      $1 000.50  ; U+2002 en space
+    expenses:examples      $1 000.50  ; U+2003 em space
+    expenses:examples      $1 000.50  ; U+2008 punctuation space
+    expenses:examples      $1 000.50  ; U+2009 thin space
+    expenses:examples      $1 000.50  ; U+202F narrow no-break space
+    expenses:examples      $1 000.50  ; U+205F medium mathematical space
+    equity:examples
+
+; Simple symbols can contain more than one currency character.
+; Quoted digit-bearing symbols are a control for the commodity boundary.
+2024-01-03 Commodity symbols
+    expenses:examples      R$1
+    expenses:examples      1 US$
+    expenses:examples      1 "Series 2024"
+    equity:examples
+
+; Quantity must end before the cost, assertion, comment, or next posting.
+2024-01-03 Amount field boundaries
+    assets:examples        1e3 USD @ $2
+    assets:examples        $.5 = $10
+    assets:examples        1 000.50 USD  ; quantity ends before this comment
+    assets:examples        123.45  ; no commodity on this line
+    equity:examples

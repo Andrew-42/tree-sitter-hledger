@@ -7,6 +7,17 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
+// A single grouping space belongs to a number; repeated spaces delimit fields.
+const groupingSpaces = [' ', '\u00a0', '\u2002', '\u2003', '\u2008', '\u2009', '\u202f', '\u205f'];
+const decimalNumber = '(?:[0-9]+(?:[.,][0-9]*)?|[.,][0-9]+)';
+const exponent = '(?:[eE](?:[+-][ \\t]*)?[0-9]+)?';
+const groupedNumbers = [
+  '[0-9]+(?:,[0-9]+)+(?:\\.[0-9]*)?',
+  '[0-9]+(?:\\.[0-9]+)+(?:,[0-9]*)?',
+  ...groupingSpaces.map(space => `[0-9]+(?:${space}[0-9]+)+(?:[.,][0-9]*)?`),
+];
+const number = `(?:${decimalNumber}${exponent}|${groupedNumbers.join('|')})`;
+
 module.exports = grammar({
   name: 'hledger',
 
@@ -16,9 +27,9 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
+    [$.amount],
     [$._cost_amount],
     [$._whitespace, $._spacer],
-    [$.auto_amount, $.amount],
   ],
 
   extras: _ => [],
@@ -57,7 +68,7 @@ module.exports = grammar({
       $._newline,
     ),
 
-    auto_amount: $ => choice($.amount, $.neg_quantity, $.quantity),
+    auto_amount: $ => choice($.amount, prec(1, $.neg_quantity), prec(1, $.quantity)),
 
     multiply: _ => '*',
 
@@ -271,19 +282,26 @@ module.exports = grammar({
     // =========
 
     amount: $ => choice(
-      seq($.commodity, optional($._whitechar), $.quantity),
-      seq($.commodity, optional($._whitechar), $.neg_quantity),
-      seq($.quantity, optional($._whitechar), $.commodity),
-      seq($.neg_quantity, optional($._whitechar), $.commodity),
+      seq(
+        optional($.sign),
+        $.commodity,
+        optional($._whitespace),
+        choice($.quantity, $.neg_quantity),
+      ),
+      seq(
+        choice($.quantity, $.neg_quantity),
+        optional(seq(optional($._whitespace), $.commodity)),
+      ),
     ),
 
-    quantity: _ => token(/[+]?\d+(?:[,. ]\d+)*/),
-    neg_quantity: _ => token(/-\d+(?:[,. ]\d+)*/),
+    sign: _ => token(/[+-][ \t]*/),
+
+    quantity: _ => token(new RegExp(`(?:\\+[ \\t]*)?${number}`, 'u')),
+    neg_quantity: _ => token(new RegExp(`-[ \\t]*${number}`, 'u')),
 
     commodity: _ => choice(
-      token(/\p{L}+/u),        // Unicode letters with u flag
-      token(/\p{Sc}/u),        // Unicode currency symbols with u flag
-      token(/"[^"\n]*"/)       // Quoted strings (no u flag needed),
+      token(/[^\p{Nd}\-+.@*;\t\r\n "{}=]+/u),
+      token(/"[^";\r\n]*"/u),
     ),
 
     date: $ => choice(

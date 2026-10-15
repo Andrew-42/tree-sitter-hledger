@@ -91,6 +91,10 @@
         {
           "type": "quantity",
           "named": true
+        },
+        {
+          "type": "sign",
+          "named": true
         }
       ]
     }
@@ -813,6 +817,10 @@
   },
   {
     "type": "query",
+    "named": true
+  },
+  {
+    "type": "sign",
     "named": true
   },
   {

@@ -144,12 +144,20 @@
           "name": "amount"
         },
         {
-          "type": "SYMBOL",
-          "name": "neg_quantity"
+          "type": "PREC",
+          "value": 1,
+          "content": {
+            "type": "SYMBOL",
+            "name": "neg_quantity"
+          }
         },
         {
-          "type": "SYMBOL",
-          "name": "quantity"
+          "type": "PREC",
+          "value": 1,
+          "content": {
+            "type": "SYMBOL",
+            "name": "quantity"
+          }
         }
       ]
     },
@@ -1201,15 +1209,11 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "commodity"
-            },
-            {
               "type": "CHOICE",
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "_whitechar"
+                  "name": "sign"
                 },
                 {
                   "type": "BLANK"
@@ -1218,7 +1222,32 @@
             },
             {
               "type": "SYMBOL",
-              "name": "quantity"
+              "name": "commodity"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_whitespace"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "quantity"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "neg_quantity"
+                }
+              ]
             }
           ]
         },
@@ -1226,91 +1255,72 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "commodity"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "quantity"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "neg_quantity"
+                }
+              ]
             },
             {
               "type": "CHOICE",
               "members": [
                 {
-                  "type": "SYMBOL",
-                  "name": "_whitechar"
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "_whitespace"
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "commodity"
+                    }
+                  ]
                 },
                 {
                   "type": "BLANK"
                 }
               ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "neg_quantity"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "quantity"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_whitechar"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "commodity"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "neg_quantity"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_whitechar"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "commodity"
             }
           ]
         }
       ]
     },
+    "sign": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "[+-][ \\t]*"
+      }
+    },
     "quantity": {
       "type": "TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "[+]?\\d+(?:[,. ]\\d+)*"
+        "value": "(?:\\+[ \\t]*)?(?:(?:[0-9]+(?:[.,][0-9]*)?|[.,][0-9]+)(?:[eE](?:[+-][ \\t]*)?[0-9]+)?|[0-9]+(?:,[0-9]+)+(?:\\.[0-9]*)?|[0-9]+(?:\\.[0-9]+)+(?:,[0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?)",
+        "flags": "u"
       }
     },
     "neg_quantity": {
       "type": "TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "-\\d+(?:[,. ]\\d+)*"
+        "value": "-[ \\t]*(?:(?:[0-9]+(?:[.,][0-9]*)?|[.,][0-9]+)(?:[eE](?:[+-][ \\t]*)?[0-9]+)?|[0-9]+(?:,[0-9]+)+(?:\\.[0-9]*)?|[0-9]+(?:\\.[0-9]+)+(?:,[0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?|[0-9]+(?: [0-9]+)+(?:[.,][0-9]*)?)",
+        "flags": "u"
       }
     },
     "commodity": {
@@ -1320,7 +1330,7 @@
           "type": "TOKEN",
           "content": {
             "type": "PATTERN",
-            "value": "\\p{L}+",
+            "value": "[^\\p{Nd}\\-+.@*;\\t\\r\\n \"{}=]+",
             "flags": "u"
           }
         },
@@ -1328,15 +1338,8 @@
           "type": "TOKEN",
           "content": {
             "type": "PATTERN",
-            "value": "\\p{Sc}",
+            "value": "\"[^\";\\r\\n]*\"",
             "flags": "u"
-          }
-        },
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "PATTERN",
-            "value": "\"[^\"\\n]*\""
           }
         }
       ]
@@ -1798,15 +1801,14 @@
   "extras": [],
   "conflicts": [
     [
+      "amount"
+    ],
+    [
       "_cost_amount"
     ],
     [
       "_whitespace",
       "_spacer"
-    ],
-    [
-      "auto_amount",
-      "amount"
     ]
   ],
   "precedences": [],

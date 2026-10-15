@@ -8,6 +8,8 @@ with hledger.
 To build the parser run: `tree-sitter generate`
 To test the parser run: `tree-sitter test`
 
+To use in Neovim: `:TSInstall! hledger`
+
 ## Currently unsupported
 
 - some special syntax that is supported mainly for backward compatibility or

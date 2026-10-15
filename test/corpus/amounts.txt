@@ -1,0 +1,222 @@
+==============================
+Commodityless quantities
+==============================
+
+2024-01-03
+    assets:examples  123.45
+    assets:examples  -123.45
+    assets:examples  +123.45
+    assets:examples  0
+
+---
+
+(source_file (journal_item (transaction (transaction_heading (date))
+  (posting (account) (amount (quantity)))
+  (posting (account) (amount (neg_quantity)))
+  (posting (account) (amount (quantity)))
+  (posting (account) (amount (quantity))))))
+
+==============================
+Signs before commodities and sign whitespace
+==============================
+
+2024-01-03
+    assets:examples  -$1
+    assets:examples  +$1
+    assets:examples  - $1
+    assets:examples  +	$1
+    assets:examples  - "US dollar" 1
+    assets:examples  $- 1
+    assets:examples  $+	1
+    assets:examples  - 1 USD
+    assets:examples  +	1 USD
+    assets:examples  -$-1
+
+---
+
+(source_file (journal_item (transaction (transaction_heading (date))
+  (posting (account) (amount (sign) (commodity) (quantity)))
+  (posting (account) (amount (sign) (commodity) (quantity)))
+  (posting (account) (amount (sign) (commodity) (quantity)))
+  (posting (account) (amount (sign) (commodity) (quantity)))
+  (posting (account) (amount (sign) (commodity) (quantity)))
+  (posting (account) (amount (commodity) (neg_quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (neg_quantity) (commodity)))
+  (posting (account) (amount (quantity) (commodity)))
+  (posting (account) (amount (sign) (commodity) (neg_quantity))))))
+
+==============================
+Scientific notation quantities
+==============================
+
+2024-01-03
+    assets:examples  $1e3
+    assets:examples  $1E3
+    assets:examples  $1e-3
+    assets:examples  $1e+3
+    assets:examples  $1e- 3
+    assets:examples  $.5e2
+    assets:examples  1.25e-3 USD
+    assets:examples  -1e3
+
+---
+
+(source_file (journal_item (transaction (transaction_heading (date))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (quantity) (commodity)))
+  (posting (account) (amount (neg_quantity))))))
+
+==============================
+Leading and trailing decimal marks
+==============================
+
+2024-01-03
+    assets:examples  $.5
+    assets:examples  $,5
+    assets:examples  $1.
+    assets:examples  $1,
+    assets:examples  $-.5
+    assets:examples  .5 USD
+    assets:examples  ,5
+    assets:examples  1.
+
+---
+
+(source_file (journal_item (transaction (transaction_heading (date))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (neg_quantity)))
+  (posting (account) (amount (quantity) (commodity)))
+  (posting (account) (amount (quantity)))
+  (posting (account) (amount (quantity))))))
+
+==============================
+Grouping marks and Unicode grouping spaces
+==============================
+
+2024-01-03
+    assets:examples  $1 234 567.89
+    assets:examples  $1 234 567.89
+    assets:examples  $1 234 567.89
+    assets:examples  $1 234 567.89
+    assets:examples  $1 234 567.89
+    assets:examples  $1 234 567.89
+    assets:examples  $1 234 567.89
+    assets:examples  $1 234 567.89
+    assets:examples  $1,234,567.89
+    assets:examples  1.234.567,89 EUR
+
+---
+
+(source_file (journal_item (transaction (transaction_heading (date))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (quantity) (commodity))))))
+
+==============================
+Commodity alphabet and quoted symbols
+==============================
+
+2024-01-03
+    assets:examples  R$1
+    assets:examples  €€1
+    assets:examples  BTC_token1
+    assets:examples  銭1
+    assets:examples  1 US$
+    assets:examples  1 "Series 2024"
+    assets:examples  1 ""
+    assets:examples  1 "A@B=2"
+
+---
+
+(source_file (journal_item (transaction (transaction_heading (date))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (commodity) (quantity)))
+  (posting (account) (amount (quantity) (commodity)))
+  (posting (account) (amount (quantity) (commodity)))
+  (posting (account) (amount (quantity) (commodity)))
+  (posting (account) (amount (quantity) (commodity))))))
+
+==============================
+Quantity boundaries before costs assertions and comments
+==============================
+
+2024-01-03
+    assets:examples  1e3 USD @ $2
+    assets:examples  $.5 = $10
+    assets:examples  1 000.50 USD  ; comment
+    assets:examples  123.45  ; comment
+    equity:examples
+
+---
+
+(source_file (journal_item (transaction (transaction_heading (date))
+    (posting (account) (amount (quantity) (commodity)) (cost) (amount (commodity) (quantity)))
+    (posting (account) (amount (commodity) (quantity)) (assert) (amount (commodity) (quantity)))
+    (posting (account) (amount (quantity) (commodity)) (tag_comment))
+    (posting (account) (amount (quantity)) (tag_comment))
+    (posting (account)))))
+
+==============================
+Commodityless costs and all balance assertion operators
+==============================
+
+2024-01-03
+    a  1 @ 2
+    a  1 @@ 2
+    a  0 = 10
+    a  0 == 10
+    a  0 =* 10
+    a  0 ==* 10
+
+---
+
+(source_file (journal_item (transaction (transaction_heading (date))
+    (posting (account) (amount (quantity)) (cost) (amount (quantity)))
+(posting (account) (amount (quantity)) (cost) (amount (quantity)))
+(posting (account) (amount (quantity)) (assert) (amount (quantity)))
+(posting (account) (amount (quantity)) (assert) (amount (quantity)))
+(posting (account) (amount (quantity)) (assert) (amount (quantity)))
+(posting (account) (amount (quantity)) (assert) (amount (quantity))))))
+
+==============================
+Semicolons are forbidden inside quoted commodities
+:error
+==============================
+
+2024-01-03
+    assets:examples  1 "bad;symbol"
+
+---
+
+(source_file)
+
+==============================
+Unfinished quoted commodity cannot span posting lines
+:error
+==============================
+
+2024-01-03
+    assets:examples  1 "unfinished
+    equity:examples  $1
+
+---
+
+(source_file)
