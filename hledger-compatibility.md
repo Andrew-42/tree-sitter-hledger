@@ -1,3 +1,5 @@
+Scope: functional native hledger 1.52 journal syntax. Ledger-only compatibility forms are optional and excluded from completion criteria; reader acceptance alone does not make a construct required.
+
 # hledger 1.52 compatibility checklist
 
 This audit targets **hledger 1.52 journal syntax**. It inventories the current grammar and checked-in corpus; it does not claim that the corpus passes or change parser behavior. Non-journal formats (CSV, timedot, timeclock, rules) are outside scope, except their prefixes in include paths. Balancing, inferred values, directive effects, and assertion evaluation remain hledger's responsibility.
@@ -70,9 +72,9 @@ Audit date: 2026-10-15. Reader source was inspected at tag `1.52`. Neither `hled
 | `payee`, quoted/empty names, comments/tags, indented content | `payee_directive`, `payee` | None | Gap: reader supports quoted empty names and arbitrary indented lines; grammar requires a nonempty restrictive token. Step 6. |
 | `tag`, comments, indented content | `tag_directive`, `tag` | `tag.txt`: Tag directive test | Covered basic name; gap: continuation/indented content absent. Verify tag alphabet independently from comment tag names. Step 6. |
 | Alternative prefixes `!`, `@` | No directive prefix production | None | Gap confirmed by `directivep`; `!account` is also an upstream test case. Step 6. |
-| Ignored compatibility directives | None | None | Gap: reader accepts the list below. Step 8. |
+| Ignored compatibility directives | None | None | Out of scope: accepted-but-ignored Ledger compatibility syntax. |
 
-Accepted compatibility forms from the reader's dispatch and implementations: `apply fixed`, `end apply fixed`, `apply tag`, `end apply tag`, `end tag`, `end apply year`, `assert`, `A` / `bucket`, `capture`, `check`, `define`, `expr`, `value`, `eval`, `python`, `--` command-line flags, `N` ignored-price commodity, and `C` commodity conversion. Most discard line contents; `python` also consumes indented lines. Implement their syntax without assigning accounting semantics. Exact boundaries and multiline behavior need corpus cases.
+Accepted compatibility forms from the reader's dispatch and implementations: `apply fixed`, `end apply fixed`, `apply tag`, `end apply tag`, `end tag`, `end apply year`, `assert`, `A` / `bucket`, `capture`, `check`, `define`, `expr`, `value`, `eval`, `python`, `--` command-line flags, `N` ignored-price commodity, and `C` commodity conversion. Most discard line contents; `python` also consumes indented lines. These forms are not required by the functional hledger syntax target. Existing support for `end apply year` may remain.
 
 ## Comments, annotations, and file boundaries
 
@@ -84,10 +86,10 @@ Accepted compatibility forms from the reader's dispatch and implementations: `ap
 | Whitespace after tag colon | Same as above | `tag.txt`: Tag with without value; Real-world tag with space after colon | Existing expected trees encode the mismatch. Replace expectations when fixing scanner; `tag: this is not a value` has a value in 1.52. Step 7. |
 | Blank/whitespace-only lines, trailing spaces | `source_file`, `_newline`; unused `_blank_line` | Ordinary blank lines throughout corpus | Gap: whitespace-only top-level lines have no production. Verify trailing spaces in each item type. Step 7. |
 | CRLF, final line without newline | `_newline` accepts LF only; transactions require it | No explicit cases | Verify normalization performed by reader and grammar behavior per item type; no blanket claim that every reader production accepts EOF. Step 7. |
-| Lot cost `{AMT}`, `{{AMT}}`, fixed `=`, empty braces | None | None | Gap: reader `lotcostp` accepts these; preserve delimiter structure. Step 8. |
-| Lot date `[DATE]`, label `(TEXT)` | None after amount | None | Gap: reader `lotdatep`, `lotnotep`. Step 8. |
-| Virtual costs `(@)` / `(@@)` | `cost` accepts only `@` / `@@` | None | Gap: reader `costp` accepts parenthesised forms. Step 8. |
-| Valuation expression `((...))`, annotation order | None | None | Gap: reader accepts ignored valuation expressions and permutes optional annotations. Verify combinations/recovery before designing rules. Step 8. |
+| Lot cost `{AMT}`, `{{AMT}}`, fixed `=`, empty braces | None | None | Out of scope: Ledger lot-price compatibility syntax. |
+| Lot date `[DATE]`, label `(TEXT)` | None after amount | None | Out of scope: Ledger lot-date and label compatibility syntax. |
+| Virtual costs `(@)` / `(@@)` | `cost` accepts only `@` / `@@` | None | Out of scope: Ledger parenthesised cost spellings; native `@` and `@@` remain required. |
+| Valuation expression `((...))`, annotation order | None | None | Out of scope: ignored Ledger valuation expressions and compatibility annotation ordering. |
 
 ## Follow-through
 

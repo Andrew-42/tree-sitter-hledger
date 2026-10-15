@@ -1,5 +1,7 @@
 # hledger grammar improvement plan
 
+Scope: cover all functional native hledger journal syntax for the targeted version (1.52). Ledger-only compatibility syntax, including ignored directives and lot/valuation annotations, is not required. Existing compatibility support may remain; accepting everything the hledger reader tolerates is not a goal.
+
 Fix the core syntax first, then cover directives and compatibility syntax, and finally verify Neovim integration. This document plans the work; it does not implement grammar changes.
 
 The official [EBNF specification](https://hledger.org/SPEC-journal.html) describes itself as a rough approximation. Where it conflicts with the [manual](https://hledger.org/1.52/hledger.html#journal), verify against hledger's reader implementation before changing the grammar.
@@ -70,11 +72,18 @@ Verified against the hledger 1.52 `JournalReader` and `Common` readers. Coverage
 
 Coverage: `test/corpus/comments_boundaries.txt`, corrected tag expectations in `test/corpus/tag.txt`, and byte-preserving fixtures in `test/fixtures/file_boundaries/`. Run the latter with `sh test/file-boundaries.sh [tree-sitter CLI path]`. Checked against the retained 1.52 reader sources; no hledger executable comparison was performed.
 
-## 8. Cover compatibility annotations
+## 8. Audit remaining functional hledger syntax
 
-- [ ] Add supported lot prices, dates, and labels.
-- [ ] Audit virtual costs and accepted-but-ignored Ledger directives.
+- [x] Audit remaining gaps against native hledger journal functionality in 1.52.
+- [ ] Add failing examples only for confirmed in-scope gaps before implementing them.
+- [ ] Allow reader-supported whitespace within `apply account`, `end apply account`, and `end aliases`: tabs and repeated spaces currently cause parse errors because the grammar uses literal single spaces. Do not generalize this to `apply year`, whose reader uses a literal spelling.
+- [ ] Match reader-supported date widths: years have at least four digits, and month/day components may have additional leading zeroes. Confirmed failing examples: `12024-01-01` and `2024-001-002`. Leave calendar validation with hledger.
+- [ ] Correct directive tag-name boundaries: the reader consumes a non-whitespace name. `tag project:phase` currently produces an error, and `tag semi;colon` incorrectly splits the name into a tag and comment. Keep directive names separate from comment-tag tokenization.
+- [ ] Add coverage for posting dates in comments: `date:1/2`, `date2:1/3`, `[1/2=1/3]`, and `[=1/3]`. These are already accepted as generic tag values or comment text; decide separately whether dedicated date nodes would benefit editor integration.
+- [ ] Exclude Ledger-only lot prices, lot dates, lot labels, valuation expressions, parenthesised cost operators, and accepted-but-ignored Ledger directives.
 - [ ] Keep accounting validation—balancing, inferred amounts, and assertion evaluation—outside the syntax parser.
+
+Assessment: no missing native directive family surfaced in the 1.52 reader's top-level dispatch. The three syntax gaps above were confirmed by inspecting the retained `JournalReader.hs` and `Common.hs` sources and running temporary parser probes. The existing 91 corpus cases and file-boundary checks pass. No hledger executable comparison was performed. This assessment introduced no grammar, scanner, generated-parser, or corpus changes; implementation should begin with failing corpus cases for the confirmed gaps.
 
 ## 9. Validate and integrate with Neovim
 
