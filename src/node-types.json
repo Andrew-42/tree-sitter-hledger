@@ -374,11 +374,6 @@
     }
   },
   {
-    "type": "date",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "decimal_mark_directive",
     "named": true,
     "fields": {},
@@ -823,11 +818,6 @@
     }
   },
   {
-    "type": "tag",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "tag_comment",
     "named": true,
     "fields": {},
@@ -1062,7 +1052,11 @@
     "named": true
   },
   {
-    "type": "apply account",
+    "type": "aliases",
+    "named": false
+  },
+  {
+    "type": "apply",
     "named": false
   },
   {
@@ -1110,15 +1104,15 @@
     "named": true
   },
   {
+    "type": "date",
+    "named": true
+  },
+  {
     "type": "decimal-mark",
     "named": false
   },
   {
-    "type": "end aliases",
-    "named": false
-  },
-  {
-    "type": "end apply account",
+    "type": "end",
     "named": false
   },
   {
@@ -1176,6 +1170,10 @@
   {
     "type": "tag",
     "named": false
+  },
+  {
+    "type": "tag",
+    "named": true
   },
   {
     "type": "tilde",

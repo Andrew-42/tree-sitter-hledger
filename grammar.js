@@ -200,7 +200,8 @@ module.exports = grammar({
       repeat($.directive_content),
     ),
 
-    tag: $ => prec(1, $._word),
+    // Directive names use whitespace boundaries; comment tags have their own rule.
+    tag: _ => token(/[^\s]+/u),
 
     commodity_directive: $ => prec.right(seq(
       'commodity',
@@ -319,14 +320,11 @@ module.exports = grammar({
       token(/"[^";\r\n]*"/u),
     ),
 
-    date: $ => choice(
-      seq($._4d, $._dsep, $._2d, $._dsep, $._2d),
-      seq($._2d, $._dsep, $._2d, $._dsep, $._2d),
-      seq($._2d, $._dsep, $._2d),
-    ),
-    _dsep: _ => token(/[-\.\/]/),
-    _2d: _ => token(/\d{1,2}/),
-    _4d: _ => token(/\d{4}/),
+    // Keep legacy short-year dates; calendar validation belongs to hledger.
+    date: _ => token(choice(
+      /(?:[0-9]{4}[0-9]*|[0-9]{1,2})[-./][0-9]+[-./][0-9]+/u,
+      /[0-9]{1,3}[-./][0-9]+/u,
+    )),
 
     // Directive arguments are line-bound; include paths are not shell words.
     file_path: _ => token(/[^;\s][^;\r\n]*/u),
@@ -378,7 +376,7 @@ module.exports = grammar({
       $.year, optional($._directive_comment), $._directive_eol,
     ),
 
-    year: _ => token(/[0-9]{4,}/u),
+    year: _ => token(/[0-9]{4}[0-9]*/u),
 
     default_commodity_directive: $ => seq(
       'D', $._whitespace, $.amount, optional($._directive_comment), $._directive_eol,
@@ -395,13 +393,15 @@ module.exports = grammar({
     )),
     alias_replacement: _ => token(/[^\r\n]+/u),
 
-    end_aliases_directive: $ => seq('end aliases', $._directive_eol),
+    end_aliases_directive: $ => seq('end', $._whitespace, 'aliases', $._directive_eol),
 
     apply_account_directive: $ => seq(
-      'apply account', $._whitespace, $.account, $._directive_eol,
+      'apply', $._whitespace, 'account', $._whitespace, $.account, $._directive_eol,
     ),
 
-    end_apply_account_directive: $ => seq('end apply account', $._directive_eol),
+    end_apply_account_directive: $ => seq(
+      'end', $._whitespace, 'apply', $._whitespace, 'account', $._directive_eol,
+    ),
     end_apply_year_directive: $ => seq('end apply year', $._directive_eol),
 
     time: _ => token(/[0-9]{2}:[0-9]{2}(?::[0-9]{2})?(?:[+-][0-9]{4})?/u),

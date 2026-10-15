@@ -524,6 +524,39 @@ end comment
     equity:examples       $-1	
 tag trailing-whitespace   
 
+###############################################################################
+
+# 10. Step 8: remaining native syntax (confirmed failing examples).
+# Directive tag-name failures can be structural even without an ERROR node.
+
+; Scope keywords accept repeated spaces and literal tabs between words.
+; Each account scope is closed; apply year deliberately keeps its literal spelling.
+apply  account assets
+2024-01-08 Account scope with repeated spaces
+    checking              $1
+    savings               $-1
+end  apply  account
+
+apply	account assets
+2024-01-08 Account scope with tabs
+    checking              $1
+    savings               $-1
+end	apply	account
+
+; Alias terminators also accept repeated spaces and literal tabs.
+alias wallet = assets:wallet
+end  aliases
+alias wallet = assets:wallet
+end	aliases
+
+; Years have at least four digits; month/day components allow extra leading zeroes.
+12024-01-01 Five-digit year
+2024-001-002 Extra leading zeroes in month and day
+
+; A directive tag name ends at whitespace, retaining colons and semicolons.
+tag project:phase
+tag semi;colon
+
 ; The next transaction uses literal CRLF endings; the final posting ends at EOF.
 2024-01-07 CRLF heading
     assets:checking       $1

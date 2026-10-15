@@ -1,0 +1,162 @@
+======================================================================
+Scope directives accept repeated spaces and tabs
+======================================================================
+
+apply  account assets
+end  apply  account
+apply	account assets
+end	apply	account
+alias wallet = assets:wallet
+end  aliases
+alias wallet = assets:wallet
+end	aliases
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (apply_account_directive
+        (account))))
+  (journal_item
+    (directive
+      (end_apply_account_directive)))
+  (journal_item
+    (directive
+      (apply_account_directive
+        (account))))
+  (journal_item
+    (directive
+      (end_apply_account_directive)))
+  (journal_item
+    (directive
+      (alias_directive
+        (alias_pattern)
+        (alias_replacement))))
+  (journal_item
+    (directive
+      (end_aliases_directive)))
+  (journal_item
+    (directive
+      (alias_directive
+        (alias_pattern)
+        (alias_replacement))))
+  (journal_item
+    (directive
+      (end_aliases_directive))))
+
+======================================================================
+Wide dates in primary secondary yearless and price fields
+======================================================================
+
+12024-01-01
+2024-001-002=12024/0001/0003
+001.002
+P 12024-001-002 USD $1
+
+---
+
+(source_file
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (secondary_date
+          (date)))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date))))
+  (journal_item
+    (directive
+      (price_directive
+        (date)
+        (commodity)
+        (amount
+          (commodity)
+          (quantity))))))
+
+======================================================================
+Directive tag names retain punctuation before whitespace
+======================================================================
+
+tag project:phase
+tag semi;colon
+tag café:étape;un  ; declaration comment
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (tag_directive
+        (tag))))
+  (journal_item
+    (directive
+      (tag_directive
+        (tag))))
+  (journal_item
+    (directive
+      (tag_directive
+        (tag)
+        (comment)))))
+
+======================================================================
+Posting dates remain generic comment tags and text
+======================================================================
+
+2024-01-08 Posting dates
+    assets:checking  $1  ; date:1/2, date2:1/3
+    equity:examples  $-1  ; [1/2=1/3]
+    ; [=1/3]
+
+---
+
+(source_file
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)
+        (note))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (quantity))
+        (tag_comment
+          (tag_value
+            (tag)
+            (value))
+          (tag_value
+            (tag)
+            (value))))
+      (posting
+        (account)
+        (amount
+          (commodity)
+          (neg_quantity))
+        (tag_comment)
+        (tag_comment)))))
+
+======================================================================
+Default year accepts more than four digits
+======================================================================
+
+year 12024
+001-002
+
+---
+
+(source_file
+  (journal_item
+    (directive
+      (default_year_directive
+        (year))))
+  (journal_item
+    (transaction
+      (transaction_heading
+        (date)))))
