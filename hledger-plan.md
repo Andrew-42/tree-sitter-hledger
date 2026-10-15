@@ -2,7 +2,8 @@
 
 Scope: cover all functional native hledger journal syntax for the targeted version (1.52). Ledger-only compatibility syntax, including ignored directives and lot/valuation annotations, is not required. Existing compatibility support may remain; accepting everything the hledger reader tolerates is not a goal.
 
-Fix the core syntax first, then cover directives and compatibility syntax, and finally verify Neovim integration. This document plans the work; it does not implement grammar changes.
+Completed: core syntax, directives, boundary handling, and Neovim validation.
+The sections below retain the implementation history and final verification.
 
 The official [EBNF specification](https://hledger.org/SPEC-journal.html) describes itself as a rough approximation. Where it conflicts with the [manual](https://hledger.org/1.52/hledger.html#journal), verify against hledger's reader implementation before changing the grammar.
 
@@ -89,12 +90,41 @@ Implementation: fixed scope-keyword whitespace, date widths, and directive tag-n
 
 ## 9. Validate and integrate with Neovim
 
-- [ ] Add focused corpus examples for every confirmed gap, checking tree structure as well as absence of errors.
-- [ ] Check ambiguous cases against the targeted hledger reader.
-- [ ] Test malformed and incomplete entries for useful editor recovery.
-- [ ] Regenerate the parser and run the corpus.
-- [ ] Audit highlighting/folding queries, filetype registration, scanner build configuration, and README support claims.
+- [x] Add focused corpus examples for every confirmed gap, checking tree structure as well as absence of errors.
+- [x] Check ambiguous cases against the targeted hledger reader.
+- [x] Test malformed and incomplete entries for useful editor recovery.
+- [x] Regenerate the parser and run the corpus.
+- [x] Audit highlighting/folding queries, filetype registration, scanner build configuration, and README support claims.
 
 ## First implementation milestone
 
 Ordinary transactions, amounts, and postings: these contain the highest-impact defects in the current grammar.
+
+## Step 9 completion
+
+Validated on 2026-10-15 with tree-sitter 0.25.10: regenerated parser, all
+97 corpus cases pass, all 11 byte-preserving file-boundary fixtures pass,
+and `make` builds the parser with its external scanner. Regeneration changes
+only the parser banner and duplicate-name ordering in node-types metadata;
+the existing vendored helper header was retained.
+
+Focused trees cover the confirmed gaps from steps 2–8. Recovery coverage in
+`test/corpus/recovery.txt` asserts that unfinished quoted commodities and
+balance assertions do not swallow later transactions; existing incomplete
+heading and commodity cases also pass. An incomplete code remains description
+text on its own line. Unterminated block comments intentionally consume to EOF.
+
+Rechecked ambiguous scope whitespace and directive tag punctuation against
+1.52 `JournalReader` (`keywordsp`, `tagdirectivep`), and date widths against
+`Common.datep'`/`yearorintp`. Earlier step notes record the remaining reader
+checks. No hledger executable comparison was performed; semantic and calendar
+validation are outside this parser's scope.
+
+Audited scanner inclusion in Make, CMake, Node, Rust, Python, Go and Swift
+build definitions. `test/neovim.lua` loads a freshly compiled parser and the
+repository queries in clean Neovim, verifies explicit journal filetype mapping,
+representative highlight captures, all eight fold node types, exact fold ranges,
+and unfolded single-line declarations. Local Neovim configuration already
+registers the checkout, queries and journal filetype. README now documents the
+registration, scanner requirement, scope and reproducible checks. No local
+Neovim configuration changes were needed.

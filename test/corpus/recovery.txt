@@ -1,0 +1,37 @@
+==================
+Malformed amounts and assertions preserve following transactions
+==================
+
+2024-01-01 Broken amount
+    assets:cash  "unfinished
+2024-01-02 Recovered
+    assets:cash  1 USD
+    equity
+
+2024-01-03 Broken assertion
+    assets:cash  1 USD ==
+2024-01-04 Recovered again
+    assets:cash  2 USD
+    equity
+
+---
+
+(source_file
+  (journal_item
+    (transaction
+      (transaction_heading (date) (note))
+      (posting (account) (ERROR))))
+  (journal_item
+    (transaction
+      (transaction_heading (date) (note))
+      (posting (account) (amount (quantity) (commodity)))
+      (posting (account))))
+  (journal_item
+    (transaction
+      (transaction_heading (date) (note))
+      (posting (account) (amount (quantity) (commodity)) (ERROR (assert)))))
+  (journal_item
+    (transaction
+      (transaction_heading (date) (note))
+      (posting (account) (amount (quantity) (commodity)))
+      (posting (account)))))

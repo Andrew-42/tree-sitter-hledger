@@ -10,6 +10,8 @@ VERSION := 1.0.0
 SRC_DIR := src
 
 TS ?= tree-sitter
+NVIM_BIN ?= nvim
+NVIM_SITE ?= $(shell $(NVIM_BIN) --headless -u NONE -i NONE -n '+lua io.write(vim.fn.stdpath("data") .. "/site")' +qa!)
 
 # install directory layout
 PREFIX ?= /usr/local
@@ -81,6 +83,15 @@ ifneq ($(wildcard queries/*.scm),)
 	install -m644 queries/*.scm '$(DESTDIR)$(DATADIR)'/tree-sitter/queries/hledger
 endif
 
+# Regenerate first, then rebuild so grammar and scanner edits are always included.
+install-neovim:
+	$(TS) generate
+	$(MAKE) lib$(LANGUAGE_NAME).$(SOEXT)
+	test -n "$(NVIM_SITE)"
+	install -d "$(NVIM_SITE)/parser" "$(NVIM_SITE)/queries/hledger"
+	install -m755 lib$(LANGUAGE_NAME).$(SOEXT) "$(NVIM_SITE)/parser/hledger.so"
+	install -m644 queries/*.scm "$(NVIM_SITE)/queries/hledger/"
+
 uninstall:
 	$(RM) '$(DESTDIR)$(LIBDIR)'/lib$(LANGUAGE_NAME).a \
 		'$(DESTDIR)$(LIBDIR)'/lib$(LANGUAGE_NAME).$(SOEXTVER) \
@@ -96,4 +107,4 @@ clean:
 test:
 	$(TS) test
 
-.PHONY: all install uninstall clean test
+.PHONY: all install install-neovim uninstall clean test

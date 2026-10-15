@@ -95,10 +95,10 @@ Accepted compatibility forms from the reader's dispatch and implementations: `ap
 
 - [x] Pin the target and compare current grammar and corpus with the versioned reader.
 - [x] Keep existing work: initial `git status --short` contained only untracked `hledger-plan.md`; update it in place and add this audit.
-- [ ] For each gap, add focused corpus cases during its implementation step, checking tree structure and comment/field ownership.
-- [ ] Resolve Verify entries with reader helpers/tests and, where ambiguity remains, a 1.52 executable. Record exact examples and outcomes.
-- [ ] Preserve working syntax: omitted amounts, costs, all assertion operators, assertion costs, Unicode names, and existing tags after correcting incompatible expectations.
-- [ ] At step 9, test malformed/incomplete input, regenerate, run the corpus, and audit queries and Neovim integration.
+- [x] For each gap, add focused corpus cases during its implementation step, checking tree structure and comment/field ownership.
+- [x] Resolve Verify entries with reader helpers/tests and, where ambiguity remains, a 1.52 executable. Record exact examples and outcomes.
+- [x] Preserve working syntax: omitted amounts, costs, all assertion operators, assertion costs, Unicode names, and existing tags after correcting incompatible expectations.
+- [x] At step 9, test malformed/incomplete input, regenerate, run the corpus, and audit queries and Neovim integration.
 
 No grammar, scanner, generated parser, or corpus files changed in this step. The first implementation milestone remains steps 2–4.
 
@@ -123,3 +123,25 @@ Top-level comments accept `;`, `#`, and `*` with optional indentation. Posting s
 Comment tags use the final whitespace-delimited name before a colon, including Unicode and punctuation. Values skip leading whitespace, trim trailing whitespace, retain embedded colons, and end at commas or line endings. Empty values remain absent value nodes. Directive tag names retain their separate tokenization.
 
 Line endings accept LF and CRLF; headings, postings, rules, directives, and continuation comments can end at EOF. Whitespace-only lines and a final whitespace-only fragment are accepted. Coverage: 91 corpus cases in total, plus 11 byte-preserving CRLF/EOF fixtures exercised with `sh test/file-boundaries.sh`. The expanded `test.journal` parses without errors. Checks use the retained 1.52 reader sources, without an hledger executable comparison.
+
+## Final validation (step 9)
+
+The inventory tables above are the historical, pre-implementation audit, not
+current open defects. Steps 2–8 implemented the confirmed native syntax gaps;
+see their corpus files and the implementation notes in `hledger-plan.md`.
+
+Final checks: 97/97 corpus trees pass after regeneration with tree-sitter
+0.25.10, all 11 CRLF/EOF fixtures pass, and `make` builds both parser and scanner.
+`test/corpus/recovery.txt` verifies recovery after an unfinished commodity and
+an incomplete assertion without consuming subsequent transactions. Existing
+incomplete heading/commodity cases remain covered. The clean Neovim check in
+`test/neovim.lua` verifies filetype registration, bundled highlight captures,
+and all eight fold types with exact ranges. Build definitions include the
+external scanner across supported bindings.
+
+Ambiguities were resolved using the retained versioned 1.52 reader helpers and
+upstream tests, including scope keyword whitespace, directive tag boundaries,
+and date widths. This is source-based compatibility verification, not an
+executable comparison. Posting dates remain generic comment tags/text; calendar,
+period/query semantics and accounting validation remain outside scope. No claim
+of accepting every tolerated Ledger compatibility form is made.
